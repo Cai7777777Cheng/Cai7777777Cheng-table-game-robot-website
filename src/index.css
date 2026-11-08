@@ -242,6 +242,7 @@ a { color: inherit; text-decoration: none; }
   justify-content: center;
   text-align: center;
   padding: 1.25rem 0.5rem;
+  transform: translateY(18%);
 }
 .page2-copy h2 {
   margin: 0;
@@ -455,6 +456,7 @@ a { color: inherit; text-decoration: none; }
     left: auto;
     right: auto;
     padding: 2.2rem 1.25rem 0.4rem;
+    transform: none;
   }
   .page2-copy h2 { max-width: 18ch; font-size: clamp(1.7rem, 7vw, 2.3rem); }
   .page2-copy p { max-width: 36rem; font-size: 0.95rem; }
