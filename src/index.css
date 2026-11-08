@@ -226,6 +226,38 @@ a { color: inherit; text-decoration: none; }
   object-fit: contain;
   object-position: center;
 }
+.page2 {
+  position: relative;
+  scroll-margin-top: 4.6rem;
+}
+.page2-copy {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 64%;
+  right: 3%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1.25rem 0.5rem;
+}
+.page2-copy h2 {
+  margin: 0;
+  max-width: 16ch;
+  font-size: clamp(1.45rem, 2.35vw, 2.7rem);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  line-height: 1.12;
+}
+.page2-copy p {
+  margin: 1rem 0 0;
+  max-width: 34ch;
+  color: var(--muted);
+  font-size: clamp(0.84rem, 1.05vw, 1.05rem);
+  line-height: 1.6;
+}
 
 .feature-row {
   display: grid;
@@ -418,6 +450,14 @@ a { color: inherit; text-decoration: none; }
   .cards { width: calc(100% - 1.5rem); }
   .card { min-height: 14rem; }
   .bleed img, .closeup img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: contain; }
+  .page2-copy {
+    position: static;
+    left: auto;
+    right: auto;
+    padding: 2.2rem 1.25rem 0.4rem;
+  }
+  .page2-copy h2 { max-width: 18ch; font-size: clamp(1.7rem, 7vw, 2.3rem); }
+  .page2-copy p { max-width: 36rem; font-size: 0.95rem; }
   .lab { width: calc(100% - 1.2rem); }
   .lab iframe { height: 70vh; }
   .close { margin-top: 4rem; }

@@ -98,19 +98,16 @@ export function Home() {
         </motion.div>
       </section>
 
-      <section className="band" id="promise">
-        <motion.div className="center" {...rise()}>
+      <figure className="bleed page2" id="promise">
+        <img src={page2Src} alt="" width={5248} height={2952} />
+        <figcaption className="page2-copy">
           <h2>It doesn’t look much like a robot.</h2>
           <p>
             Nomo sits between the cards and your hands. The wraparound screen around its neck
             brings dodges, HP bars, and moves to the whole table—no more huddling around a single
             screen.
           </p>
-        </motion.div>
-      </section>
-
-      <figure className="bleed">
-        <img src={page2Src} alt="" width={5248} height={2952} />
+        </figcaption>
       </figure>
 
       <section className="band" id="features">
