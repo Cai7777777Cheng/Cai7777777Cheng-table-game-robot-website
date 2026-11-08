@@ -92,7 +92,7 @@ export function Home() {
           <h1>Nomo</h1>
           <p>Tabletop companion</p>
           <a className="pill light" href="#lab">
-            See the prototype
+            see more details
           </a>
         </motion.div>
       </section>
