@@ -232,8 +232,8 @@ a { color: inherit; text-decoration: none; }
 }
 .page2-copy {
   position: absolute;
-  top: 0;
-  bottom: 0;
+  top: 54%;
+  bottom: 6%;
   left: 64%;
   right: 3%;
   display: flex;
@@ -241,8 +241,7 @@ a { color: inherit; text-decoration: none; }
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 1.25rem 0.5rem;
-  transform: translateY(18%);
+  padding: 0 0.5rem;
 }
 .page2-copy h2 {
   margin: 0;

@@ -4,7 +4,7 @@ import { ScreenBreakdown } from '../components/ScreenBreakdown.tsx'
 
 const heroSrc = `${import.meta.env.BASE_URL}hero.jpg`
 const coverSrc = `${import.meta.env.BASE_URL}hero-v2.jpg`
-const page2Src = `${import.meta.env.BASE_URL}page2-v2.jpg`
+const page2Src = `${import.meta.env.BASE_URL}page2-v3.png`
 const repoUrl = 'https://github.com/Cai7777777Cheng/Table-robot-function'
 
 const features = [
