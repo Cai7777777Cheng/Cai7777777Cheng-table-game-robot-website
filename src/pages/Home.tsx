@@ -4,6 +4,7 @@ import { ScreenBreakdown } from '../components/ScreenBreakdown.tsx'
 
 const heroSrc = `${import.meta.env.BASE_URL}hero.jpg`
 const coverSrc = `${import.meta.env.BASE_URL}hero-v2.jpg`
+const page2Src = `${import.meta.env.BASE_URL}page2-v2.jpg`
 const repoUrl = 'https://github.com/Cai7777777Cheng/Table-robot-function'
 
 const features = [
@@ -109,7 +110,7 @@ export function Home() {
       </section>
 
       <figure className="bleed">
-        <img src={heroSrc} alt="" />
+        <img src={page2Src} alt="" width={5248} height={2952} />
       </figure>
 
       <section className="band" id="features">
