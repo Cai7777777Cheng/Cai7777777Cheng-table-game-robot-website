@@ -116,7 +116,7 @@ a { color: inherit; text-decoration: none; }
 .ux-frame {
   width: 100%;
   aspect-ratio: 2400 / 1216;
-  background: #f3f3f1;
+  background: #fff;
 }
 .ux-frame img {
   display: block;
