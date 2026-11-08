@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from 'framer-motion'
 import { ScreenBreakdown } from '../components/ScreenBreakdown.tsx'
 
 const heroSrc = `${import.meta.env.BASE_URL}hero.jpg`
+const coverSrc = `${import.meta.env.BASE_URL}hero-v2.jpg`
 const repoUrl = 'https://github.com/Cai7777777Cheng/Table-robot-function'
 
 const features = [
@@ -74,7 +75,7 @@ export function Home() {
         <div className="hero-frame">
           <img
             className="hero-photo"
-            src={heroSrc}
+            src={coverSrc}
             alt="Nomo between two players, the wraparound screen showing the match"
             width={2400}
             height={1350}
