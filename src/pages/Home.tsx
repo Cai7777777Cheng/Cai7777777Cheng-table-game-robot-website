@@ -63,7 +63,7 @@ const ease = [0.22, 1, 0.36, 1] as const
 function page2Progress(figure: HTMLElement) {
   const rect = figure.getBoundingClientRect()
   const viewHeight = window.innerHeight
-  const startTop = viewHeight * 0.4
+  const startTop = viewHeight / 3
   const endTop = rect.height >= viewHeight ? 0 : Math.max(0, viewHeight - rect.height)
   const span = startTop - endTop
   if (span <= 0) return rect.top <= startTop ? 1 : 0
