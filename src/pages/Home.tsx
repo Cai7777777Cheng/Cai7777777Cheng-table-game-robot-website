@@ -230,7 +230,9 @@ export function Home() {
       </section>
 
       <figure className="bleed closeup">
-        <img src={heroSrc} alt="Close view of Nomo’s wraparound screen" />
+        <div className="photo-soon" role="img" aria-label="Photo to come">
+          <span>Photo to come</span>
+        </div>
       </figure>
 
       <section className="band" id="craft">
@@ -241,16 +243,15 @@ export function Home() {
       </section>
 
       <section className="cards" id="cards" aria-label="Details">
-        <article className="card photo">
-          <img src={heroSrc} alt="" />
-        </article>
-        <article className="card gray" aria-label="Table photo to come">
+        <article className="card gray" aria-label="Photo to come">
           <span>Photo to come</span>
         </article>
-        <Link className="card gray link" to="/prototype">
-          <span>Open the prototype</span>
-          <em>→</em>
-        </Link>
+        <article className="card gray" aria-label="Photo to come">
+          <span>Photo to come</span>
+        </article>
+        <article className="card gray" aria-label="Photo to come">
+          <span>Photo to come</span>
+        </article>
       </section>
 
       <section className="band" id="lab">
