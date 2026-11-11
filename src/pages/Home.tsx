@@ -3,7 +3,7 @@ import { motion, useReducedMotion } from 'framer-motion'
 import { ScreenBreakdown } from '../components/ScreenBreakdown.tsx'
 
 const heroSrc = `${import.meta.env.BASE_URL}hero.jpg`
-const coverSrc = `${import.meta.env.BASE_URL}hero-v4.jpg`
+const coverSrc = `${import.meta.env.BASE_URL}hero-v5.jpg`
 const page2VideoSrc = `${import.meta.env.BASE_URL}page2-assemble.mp4`
 const page2PosterSrc = `${import.meta.env.BASE_URL}page2-assemble-poster.jpg`
 const repoUrl = 'https://github.com/Cai7777777Cheng/Table-robot-function'
