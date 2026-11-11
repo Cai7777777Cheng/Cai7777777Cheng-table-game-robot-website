@@ -10,8 +10,8 @@ const repoUrl = 'https://github.com/Cai7777777Cheng/Table-robot-function'
 
 const features = [
   {
-    title: 'Screen',
-    body: 'A cylindrical screen around its neck. Every seat sees the same match.',
+    title: 'Build Connections',
+    body: 'It senses the mood at the table, draws players closer, and deepens immersion.',
   },
   {
     title: 'At the table',
