@@ -1,10 +1,12 @@
+import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, useReducedMotion } from 'framer-motion'
 import { ScreenBreakdown } from '../components/ScreenBreakdown.tsx'
 
 const heroSrc = `${import.meta.env.BASE_URL}hero.jpg`
 const coverSrc = `${import.meta.env.BASE_URL}hero-v4.jpg`
-const page2Src = `${import.meta.env.BASE_URL}page2-v3.png`
+const page2VideoSrc = `${import.meta.env.BASE_URL}page2-assemble.mp4`
+const page2PosterSrc = `${import.meta.env.BASE_URL}page2-assemble-poster.jpg`
 const repoUrl = 'https://github.com/Cai7777777Cheng/Table-robot-function'
 
 const features = [
@@ -58,6 +60,113 @@ function Icon({ name }: { name: (typeof features)[number]['icon'] }) {
 
 const ease = [0.22, 1, 0.36, 1] as const
 
+function page2Progress(figure: HTMLElement) {
+  const rect = figure.getBoundingClientRect()
+  const viewHeight = window.innerHeight
+  const enteringTop = viewHeight
+  const centeredTop = (viewHeight - rect.height) / 2
+  const span = enteringTop - centeredTop
+  if (span <= 0) return 0
+  return Math.min(1, Math.max(0, (enteringTop - rect.top) / span))
+}
+
+function Page2Assemble({ reduce }: { reduce: boolean }) {
+  const figureRef = useRef<HTMLElement>(null)
+  const videoRef = useRef<HTMLVideoElement>(null)
+
+  useEffect(() => {
+    const figure = figureRef.current
+    const video = videoRef.current
+    if (!figure || !video) return
+
+    let frame = 0
+    let cancelled = false
+    let primed = false
+
+    const seek = () => {
+      frame = 0
+      const duration = video.duration
+      if (!Number.isFinite(duration) || duration <= 0) return
+      const end = Math.max(0, duration - 1 / 30)
+      const next = reduce ? end : page2Progress(figure) * end
+      if (Math.abs(video.currentTime - next) > 0.015) video.currentTime = next
+    }
+
+    const schedule = () => {
+      if (frame) return
+      frame = requestAnimationFrame(seek)
+    }
+
+    const unlockSeeking = () => {
+      if (primed || reduce) return
+      primed = true
+      const safari = /safari/i.test(navigator.userAgent) && !/chrome|chromium|android/i.test(navigator.userAgent)
+      if (!safari) return
+      const pending = video.play()
+      if (!pending || typeof pending.then !== 'function') {
+        video.pause()
+        return
+      }
+      pending
+        .then(() => {
+          if (cancelled) return
+          video.pause()
+          seek()
+        })
+        .catch(() => {
+          if (!cancelled) video.pause()
+        })
+    }
+
+    const onReady = () => {
+      video.pause()
+      seek()
+      unlockSeeking()
+    }
+
+    video.addEventListener('loadedmetadata', onReady)
+    if (video.readyState >= 1) onReady()
+    if (!reduce) {
+      window.addEventListener('scroll', schedule, { passive: true })
+      window.addEventListener('resize', schedule, { passive: true })
+    }
+
+    return () => {
+      cancelled = true
+      video.pause()
+      video.removeEventListener('loadedmetadata', onReady)
+      window.removeEventListener('scroll', schedule)
+      window.removeEventListener('resize', schedule)
+      if (frame) cancelAnimationFrame(frame)
+    }
+  }, [reduce])
+
+  return (
+    <figure className="bleed page2" id="promise" ref={figureRef}>
+      <video
+        ref={videoRef}
+        className="page2-video"
+        src={page2VideoSrc}
+        poster={page2PosterSrc}
+        muted
+        playsInline
+        preload="auto"
+        width={2560}
+        height={1440}
+        aria-label="Nomo assembling on the table"
+      />
+      <figcaption className="page2-copy">
+        <h2>It doesn’t look much like a robot.</h2>
+        <p>
+          Nomo sits between the cards and your hands. The wraparound screen around its neck
+          brings dodges, HP bars, and moves to the whole table—no more huddling around a single
+          screen.
+        </p>
+      </figcaption>
+    </figure>
+  )
+}
+
 export function Home() {
   const reduce = useReducedMotion()
   const rise = (delay = 0) =>
@@ -98,17 +207,7 @@ export function Home() {
         </motion.div>
       </section>
 
-      <figure className="bleed page2" id="promise">
-        <img src={page2Src} alt="" width={5248} height={2952} />
-        <figcaption className="page2-copy">
-          <h2>It doesn’t look much like a robot.</h2>
-          <p>
-            Nomo sits between the cards and your hands. The wraparound screen around its neck
-            brings dodges, HP bars, and moves to the whole table—no more huddling around a single
-            screen.
-          </p>
-        </figcaption>
-      </figure>
+      <Page2Assemble reduce={reduce === true} />
 
       <section className="band" id="features">
         <div className="feature-row">
