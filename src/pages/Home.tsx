@@ -11,7 +11,7 @@ const repoUrl = 'https://github.com/Cai7777777Cheng/Table-robot-function'
 const features = [
   {
     title: 'Build Connections',
-    body: 'It senses the mood at the table, draws players closer, and deepens immersion.',
+    body: 'Senses the mood at the table, draws players closer, and deepens immersion.',
   },
   {
     title: 'At the table',
