@@ -198,8 +198,8 @@ export function Home() {
 
       <section className="band" id="craft">
         <motion.div className="center narrow" {...rise()}>
-          <h2>Made for the table.</h2>
-          <p>The screen, the eyes, and the body all answer to this table. The technology stays inside the object.</p>
+          <h2>More details to see.</h2>
+          <p>The screens, the eyes, and the body were made to heighten the mood at the table.</p>
         </motion.div>
       </section>
 
