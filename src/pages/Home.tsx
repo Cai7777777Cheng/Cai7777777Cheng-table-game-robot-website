@@ -12,50 +12,16 @@ const features = [
   {
     title: 'Screen',
     body: 'A cylindrical screen around its neck. Every seat sees the same match.',
-    icon: 'screen',
   },
   {
     title: 'At the table',
     body: 'The cards stay in your hands. It doesn’t play for you. It only lights the round.',
-    icon: 'table',
   },
   {
     title: 'Eyes',
     body: 'Two slanted lights. When the table is quiet, it’s just an object sitting there.',
-    icon: 'eye',
   },
 ] as const
-
-function Icon({ name }: { name: (typeof features)[number]['icon'] }) {
-    if (name === 'screen') {
-    return (
-      <svg viewBox="0 0 64 64" aria-hidden="true">
-        <path d="M14 22c0-4.2 8-7.5 18-7.5s18 3.3 18 7.5" />
-        <path d="M14 22v9c0 4.2 8 7.5 18 7.5s18-3.3 18-7.5v-9" />
-        <path d="M14 27.5c0 3.4 8 6 18 6s18-2.6 18-6" />
-        <path d="M32 38.5V46" />
-        <path d="M22 52c1.6-5 18.4-5 20 0" />
-      </svg>
-    )
-  }
-  if (name === 'table') {
-    return (
-      <svg viewBox="0 0 64 64" aria-hidden="true">
-        <path d="M8 42h48" />
-        <path d="M16 42v12M48 42v12" />
-        <path d="M20 28c2.4-4 7.2-4 8.4 0" />
-        <path d="M35.6 28c1.2-4 6-4 8.4 0" />
-        <path d="M24 32h16" />
-      </svg>
-    )
-  }
-  return (
-    <svg viewBox="0 0 64 64" aria-hidden="true">
-      <path d="M16 30c6-2 10 4 12 4s6-6 12-4" />
-      <path d="M18 40c6 2 10-3 14-3s8 5 14 3" />
-    </svg>
-  )
-}
 
 const ease = [0.22, 1, 0.36, 1] as const
 
@@ -208,31 +174,27 @@ export function Home() {
 
       <Page2Assemble reduce={reduce === true} />
 
-      <section className="band" id="features">
-        <div className="feature-row">
-          {features.map((item) => (
-            <article key={item.title}>
-              <Icon name={item.icon} />
-              <h3>{item.title}</h3>
-              <p>{item.body}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="band tight" id="statement">
-        <motion.h2 className="statement" {...rise()}>
+      <section className="table-band" id="features" aria-label="Table">
+        <h2>
           A ring of light.
           <br />
           The whole table can see.
-        </motion.h2>
+        </h2>
+        <ol className="table-list">
+          {features.map((item, index) => (
+            <li key={item.title} className={index === 1 ? 'frame-left' : 'frame-right'}>
+              <div className="table-copy">
+                <span className="table-num">{index + 1}</span>
+                <h3>{item.title}</h3>
+                <p>{item.body}</p>
+              </div>
+              <div className="table-frame" role="img" aria-label="Photo to come">
+                <span>Photo to come</span>
+              </div>
+            </li>
+          ))}
+        </ol>
       </section>
-
-      <figure className="bleed closeup">
-        <div className="photo-soon" role="img" aria-label="Photo to come">
-          <span>Photo to come</span>
-        </div>
-      </figure>
 
       <section className="band" id="craft">
         <motion.div className="center narrow" {...rise()}>
