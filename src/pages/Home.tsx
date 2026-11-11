@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react'
-import { Link } from 'react-router-dom'
 import { motion, useReducedMotion } from 'framer-motion'
 import { ScreenBreakdown } from '../components/ScreenBreakdown.tsx'
 
@@ -259,9 +258,9 @@ export function Home() {
           <h2>The screen, taken apart.</h2>
           <p>Status, expression, skill, and the world behind the character.</p>
           <div className="actions">
-            <Link className="pill" to="/prototype">
+            <a className="pill" href="/#ux">
               Open the prototype
-            </Link>
+            </a>
             <a className="quiet-link" href={repoUrl} target="_blank" rel="noreferrer">
               GitHub repo
             </a>
@@ -276,9 +275,9 @@ export function Home() {
         <div className="close-veil" />
         <div className="close-copy">
           <h2>Leave this round on the table.</h2>
-          <Link className="pill" to="/prototype">
+          <a className="pill" href="/#ux">
             Open the prototype
-          </Link>
+          </a>
         </div>
       </section>
 

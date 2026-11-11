@@ -5,7 +5,7 @@ const sections = [
   { id: 'promise', label: 'Screen' },
   { id: 'features', label: 'Table' },
   { id: 'craft', label: 'Object' },
-  { id: 'lab', label: 'Prototype' },
+  { id: 'ux', label: 'Prototype' },
 ]
 
 export function Nav() {
@@ -44,25 +44,27 @@ export function Nav() {
         Nomo
       </Link>
       <nav className="nav-links" aria-label="Sections">
-        {sections.map((section) =>
-          section.id === 'lab' ? (
-            <Link key={section.id} to="/prototype" className={onPrototype ? 'on' : undefined}>
-              {section.label}
-            </Link>
-          ) : (
-            <a
-              key={section.id}
-              href={`/#${section.id}`}
-              className={!onPrototype && stuck && active === section.id ? 'on' : undefined}
-            >
-              {section.label}
-            </a>
-          ),
-        )}
+        {sections.map((section) => (
+          <a
+            key={section.id}
+            href={`/#${section.id}`}
+            className={
+              section.id === 'ux'
+                ? onPrototype || (stuck && active === section.id)
+                  ? 'on'
+                  : undefined
+                : !onPrototype && stuck && active === section.id
+                  ? 'on'
+                  : undefined
+            }
+          >
+            {section.label}
+          </a>
+        ))}
       </nav>
-      <Link className="pill" to="/prototype">
+      <a className="pill" href="/#ux">
         Open prototype
-      </Link>
+      </a>
     </header>
   )
 }

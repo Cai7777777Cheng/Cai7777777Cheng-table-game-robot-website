@@ -4,7 +4,6 @@ import { Footer } from './components/Footer.tsx'
 import { Nav } from './components/Nav.tsx'
 import { Home } from './pages/Home.tsx'
 import { Missing } from './pages/Missing.tsx'
-import { Prototype } from './pages/Prototype.tsx'
 
 function ScrollWithRoute() {
   const { pathname, hash } = useLocation()
@@ -12,11 +11,7 @@ function ScrollWithRoute() {
 
   useEffect(() => {
     document.title = path === '/prototype' ? 'Prototype — Nomo' : 'Nomo — Tabletop companion'
-    if (path === '/prototype') {
-      window.scrollTo(0, 0)
-      return
-    }
-    const fromPath = path === '/features' ? 'features' : ''
+    const fromPath = path === '/features' ? 'features' : path === '/prototype' ? 'ux' : ''
     const id = fromPath || hash.replace('#', '')
     const root = document.documentElement
     const previous = root.style.scrollBehavior
@@ -40,7 +35,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/features" element={<Home />} />
-        <Route path="/prototype" element={<Prototype />} />
+        <Route path="/prototype" element={<Home />} />
         <Route path="/companion" element={<Navigate to="/prototype" replace />} />
         <Route path="*" element={<Missing />} />
       </Routes>
