@@ -63,11 +63,11 @@ const ease = [0.22, 1, 0.36, 1] as const
 function page2Progress(figure: HTMLElement) {
   const rect = figure.getBoundingClientRect()
   const viewHeight = window.innerHeight
-  const enteringTop = viewHeight
-  const centeredTop = (viewHeight - rect.height) / 2
-  const span = enteringTop - centeredTop
-  if (span <= 0) return 0
-  return Math.min(1, Math.max(0, (enteringTop - rect.top) / span))
+  const startTop = viewHeight / 2
+  const endTop = rect.height >= viewHeight ? 0 : Math.max(0, viewHeight - rect.height)
+  const span = startTop - endTop
+  if (span <= 0) return rect.top <= startTop ? 1 : 0
+  return Math.min(1, Math.max(0, (startTop - rect.top) / span))
 }
 
 function Page2Assemble({ reduce }: { reduce: boolean }) {
