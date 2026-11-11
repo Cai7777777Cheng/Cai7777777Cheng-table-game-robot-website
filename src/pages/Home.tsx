@@ -236,7 +236,7 @@ export function Home() {
         </div>
         <div className="close-veil" />
         <div className="close-copy">
-          <h2>Leave this round on the table.</h2>
+          <h2>Screen UX Breakdown.</h2>
           <a className="pill" href="/#ux">
             Open the prototype
           </a>
