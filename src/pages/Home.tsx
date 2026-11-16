@@ -47,50 +47,88 @@ function Page2Assemble({ reduce }: { reduce: boolean }) {
     let frame = 0
     let cancelled = false
     let primed = false
+    let seeking = false
+    let want = 0
 
-    const seek = () => {
-      frame = 0
+    const endTime = () => {
       const duration = video.duration
-      if (!Number.isFinite(duration) || duration <= 0) return
-      const end = Math.max(0, duration - 1 / 30)
-      const next = reduce ? end : page2Progress(figure) * end
-      if (Math.abs(video.currentTime - next) > 0.015) video.currentTime = next
+      if (!Number.isFinite(duration) || duration <= 0) return 0
+      return Math.max(0, duration - 1 / 30)
+    }
+
+    const covers = (time: number) => {
+      const ranges = video.buffered
+      for (let i = 0; i < ranges.length; i++) {
+        if (time >= ranges.start(i) - 0.05 && time <= ranges.end(i) + 0.001) return true
+      }
+      return false
+    }
+
+    const nearestBuffered = (time: number) => {
+      const ranges = video.buffered
+      if (ranges.length === 0) return null
+      let best = ranges.start(0)
+      let bestDist = Math.abs(best - time)
+      for (let i = 0; i < ranges.length; i++) {
+        const clamped = Math.min(ranges.end(i), Math.max(ranges.start(i), time))
+        const dist = Math.abs(clamped - time)
+        if (dist < bestDist) {
+          best = clamped
+          bestDist = dist
+        }
+      }
+      return best
+    }
+
+    const apply = () => {
+      frame = 0
+      if (cancelled || seeking || video.readyState < 2) return
+      const end = endTime()
+      if (end <= 0) return
+      want = reduce ? end : page2Progress(figure) * end
+      const target = covers(want) ? want : nearestBuffered(want)
+      if (target == null || Math.abs(video.currentTime - target) < 1 / 60) return
+      seeking = true
+      video.currentTime = target
     }
 
     const schedule = () => {
       if (frame) return
-      frame = requestAnimationFrame(seek)
+      frame = requestAnimationFrame(apply)
     }
 
-    const unlockSeeking = () => {
+    const onSeeked = () => {
+      seeking = false
+      if (cancelled) return
+      if (Math.abs(video.currentTime - want) > 1 / 30) apply()
+    }
+
+    const wakeDecoder = () => {
       if (primed || reduce) return
       primed = true
-      const safari = /safari/i.test(navigator.userAgent) && !/chrome|chromium|android/i.test(navigator.userAgent)
-      if (!safari) return
+      video.muted = true
       const pending = video.play()
-      if (!pending || typeof pending.then !== 'function') {
+      const settle = () => {
+        if (cancelled) return
         video.pause()
-        return
+        apply()
       }
-      pending
-        .then(() => {
-          if (cancelled) return
-          video.pause()
-          seek()
-        })
-        .catch(() => {
-          if (!cancelled) video.pause()
-        })
+      if (pending && typeof pending.then === 'function') pending.then(settle, settle)
+      else settle()
     }
 
     const onReady = () => {
-      video.pause()
-      seek()
-      unlockSeeking()
+      if (video.readyState >= 2) apply()
+      if (video.readyState >= 3) wakeDecoder()
     }
 
-    video.addEventListener('loadedmetadata', onReady)
-    if (video.readyState >= 1) onReady()
+    video.preload = 'auto'
+    video.muted = true
+    video.addEventListener('loadeddata', onReady)
+    video.addEventListener('canplay', onReady)
+    video.addEventListener('progress', schedule)
+    video.addEventListener('seeked', onSeeked)
+    if (video.readyState >= 2) onReady()
     if (!reduce) {
       window.addEventListener('scroll', schedule, { passive: true })
       window.addEventListener('resize', schedule, { passive: true })
@@ -99,7 +137,10 @@ function Page2Assemble({ reduce }: { reduce: boolean }) {
     return () => {
       cancelled = true
       video.pause()
-      video.removeEventListener('loadedmetadata', onReady)
+      video.removeEventListener('loadeddata', onReady)
+      video.removeEventListener('canplay', onReady)
+      video.removeEventListener('progress', schedule)
+      video.removeEventListener('seeked', onSeeked)
       window.removeEventListener('scroll', schedule)
       window.removeEventListener('resize', schedule)
       if (frame) cancelAnimationFrame(frame)
