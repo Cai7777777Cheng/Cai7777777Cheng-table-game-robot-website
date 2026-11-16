@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 
-const personalSiteUrl = 'https://cai7777777cheng.github.io/Personal-Website/'
+const personalSiteUrl = 'https://peng-chengxu.deed.page/'
 
 const sections = [
   { id: 'promise', label: 'Screen' },
