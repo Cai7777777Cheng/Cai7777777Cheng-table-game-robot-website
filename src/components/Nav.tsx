@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 
+const personalSiteUrl = 'https://cai7777777cheng.github.io/Personal-Website/'
+
 const sections = [
   { id: 'promise', label: 'Screen' },
   { id: 'features', label: 'Table' },
@@ -62,9 +64,14 @@ export function Nav() {
           </a>
         ))}
       </nav>
-      <a className="pill" href="/#ux">
-        Open prototype
-      </a>
+      <div className="nav-end">
+        <a className="nav-return" href={personalSiteUrl}>
+          Personal site
+        </a>
+        <a className="pill" href="/#ux">
+          Open prototype
+        </a>
+      </div>
     </header>
   )
 }
