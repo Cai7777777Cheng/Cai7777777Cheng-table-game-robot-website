@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
+import { ProjectStory } from '../components/ProjectStory.tsx'
 import { ScreenBreakdown } from '../components/ScreenBreakdown.tsx'
 
 const heroSrc = `${import.meta.env.BASE_URL}hero.jpg`
@@ -214,6 +215,8 @@ export function Home() {
       </section>
 
       <Page2Assemble reduce={reduce === true} />
+
+      <ProjectStory />
 
       <section className="table-band" id="features" aria-label="Table">
         <h2>

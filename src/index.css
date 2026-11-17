@@ -367,6 +367,185 @@ a { color: inherit; text-decoration: none; }
   line-height: 1.6;
 }
 
+.inset {
+  width: min(72rem, calc(100% - 3rem));
+  margin-inline: auto;
+}
+
+.project-intro {
+  padding: 6.75rem 0 4.5rem;
+  background: #fff;
+}
+.project-intro h2 {
+  margin: 0;
+  color: #111;
+  font-size: min(4.75rem, calc((100vw - 3.2rem) / 9.15));
+  font-weight: 500;
+  letter-spacing: -0.048em;
+  line-height: 0.98;
+  text-wrap: balance;
+}
+.project-duration {
+  margin: 1.45rem 0 0;
+  color: #6d6d6d;
+  font-size: 1.02rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.about-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.05rem;
+}
+.about-chips span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.7rem;
+  padding: 0.15rem 0.72rem;
+  border-radius: 999px;
+  background: #f2f2f2;
+  color: #8a8a8a;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+.project-lede {
+  margin: 2.15rem 0 0;
+  max-width: 38rem;
+  color: #111;
+  font-size: 1.15rem;
+  line-height: 1.7;
+}
+
+.gym-scene {
+  margin: 0;
+  background: #fff;
+}
+.gym-frame {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #fff;
+}
+.gym-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+.story-label {
+  margin: 0;
+  color: #8a8a8a;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  line-height: 1.3;
+}
+.story-body {
+  margin: 0.9rem 0 0;
+  max-width: 38rem;
+  color: #6d6d6d;
+  font-size: 1.15rem;
+  line-height: 1.7;
+}
+.trend-lead {
+  padding: 5.5rem 0 2.75rem;
+  background: #fff;
+}
+.story-block {
+  padding-top: 4.6rem;
+  background: #fff;
+}
+.story-end {
+  padding-bottom: 6.5rem;
+}
+.hmw {
+  padding-top: 5.15rem;
+}
+.hmw-line {
+  margin: 0.9rem 0 0;
+  max-width: 22em;
+  color: #111;
+  font-size: clamp(1.85rem, 3.5vw, 3.05rem);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  line-height: 1.18;
+  text-wrap: balance;
+}
+.hmw-line .keep { white-space: nowrap; }
+
+.stat-photo {
+  position: relative;
+  margin: 0;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #111;
+  overflow: hidden;
+}
+.stat-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+.stat-photo.scrim::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 72% 78% at 18% 100%, rgba(0, 0, 0, 0.62) 0%, rgba(0, 0, 0, 0.3) 46%, rgba(0, 0, 0, 0) 72%),
+    linear-gradient(to top, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 36%);
+}
+.stat-photo-copy {
+  position: absolute;
+  z-index: 2;
+  left: max(1.5rem, calc((100% - 72rem) / 2));
+  bottom: clamp(1.6rem, 4.6vw, 3.4rem);
+  max-width: min(36rem, calc(100% - 3rem));
+  color: #fff;
+}
+.stat-num {
+  margin: 0;
+  font-weight: 500;
+  letter-spacing: -0.055em;
+  line-height: 0.88;
+  white-space: nowrap;
+}
+.stat-photo .stat-num {
+  color: #fff;
+  font-size: clamp(3.5rem, 9.2vw, 7.75rem);
+}
+.stat-photo .stat-line {
+  margin: 0.7rem 0 0;
+  max-width: 26rem;
+  color: #fff;
+  font-size: clamp(1rem, 1.45vw, 1.22rem);
+  font-weight: 500;
+  line-height: 1.35;
+}
+.stat-type {
+  background: #f3f3f3;
+  padding: clamp(4.75rem, 9vw, 7.5rem) 0;
+}
+.stat-type .stat-num {
+  color: #111;
+  font-size: clamp(4rem, 11vw, 8.5rem);
+}
+.stat-type .stat-line {
+  margin: 0.95rem 0 0;
+  max-width: 36rem;
+  color: #6d6d6d;
+  font-size: clamp(1.05rem, 1.5vw, 1.28rem);
+  font-weight: 400;
+  line-height: 1.45;
+}
+
 .cards {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -502,6 +681,17 @@ a { color: inherit; text-decoration: none; }
 .missing p { margin: 0 0 1.4rem; color: #666; }
 
 @media (max-width: 860px) {
+  .inset { width: min(72rem, calc(100% - 2.3rem)); }
+  .project-intro { padding: 4.25rem 0 2.75rem; }
+  .project-lede, .story-body { font-size: 1.02rem; }
+  .trend-lead { padding: 3.5rem 0 1.75rem; }
+  .story-block { padding-top: 3.25rem; }
+  .story-end { padding-bottom: 4.25rem; }
+  .hmw { padding-top: 3.6rem; }
+  .stat-photo-copy { left: 1.15rem; bottom: 0.9rem; max-width: calc(100% - 2.3rem); }
+  .stat-photo .stat-num { font-size: clamp(2.35rem, 11vw, 3.6rem); }
+  .stat-photo .stat-line { max-width: none; font-size: 0.95rem; }
+  .stat-type .stat-num { font-size: clamp(3.15rem, 16vw, 5.5rem); }
   .nav {
     display: flex;
     justify-content: space-between;
