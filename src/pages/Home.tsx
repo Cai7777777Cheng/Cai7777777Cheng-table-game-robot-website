@@ -112,6 +112,25 @@ export function Home() {
         armWatch()
         return
       }
+      const drift = next - video.currentTime
+      if (Math.abs(drift) < frameDuration * 0.45) {
+        seeking = false
+        if (!video.paused) video.pause()
+        clearWatch()
+        applyFade()
+        return
+      }
+      // Ahead of the buffer, play forward. Seeking past the buffered range
+      // aborts the in-flight request and leaves the playhead stuck mid-clip.
+      if (drift > 0 && !holds(next)) {
+        if (video.paused) {
+          const pending = video.play()
+          if (pending && typeof pending.catch === 'function') pending.catch(() => armWatch())
+        }
+        armWatch()
+        return
+      }
+      if (!video.paused) video.pause()
       // Leave the in-flight seek alone. Replacing currentTime on every frame
       // aborts its range request, which is what froze the first pass.
       if ((seeking || video.seeking) && !force) {
@@ -120,15 +139,6 @@ export function Home() {
         return
       }
       force = false
-      if (Math.abs(video.currentTime - next) < frameDuration * 0.45) {
-        seeking = false
-        clearWatch()
-        return
-      }
-      if (!holds(next) && Math.abs(lastAssigned - next) < frameDuration * 0.45) {
-        armWatch()
-        return
-      }
       seeking = true
       lastAssigned = next
       try {
@@ -143,15 +153,37 @@ export function Home() {
     const onSeeked = () => {
       seeking = false
       clearWatch()
+      applyFade()
       step()
     }
 
-    // Video scrub ends when the figure is fully in view. A short further
-    // scroll fades the lights-on still in. Scrolling up clears that fade
-    // before the clip rewinds. The assembly start/end mapping is unchanged.
+    const lastFrameTime = () => {
+      const duration = video.duration
+      if (!Number.isFinite(duration) || duration <= 0) return null
+      const frameCount = Math.max(1, Math.round(duration / frameDuration))
+      return Math.min(duration, (frameCount - 1) * frameDuration)
+    }
+
+    // The last frame has to be the one on screen. A seek that has only been
+    // requested, or a playhead stuck mid-clip, does not count.
+    const showingLastFrame = () => {
+      const last = lastFrameTime()
+      if (last == null || video.seeking || video.readyState < 2) return false
+      return video.currentTime >= last - frameDuration * 0.45
+    }
+
+    // Scrub still ends when the figure is fully in view, and a short further
+    // scroll fades the lights-on still. That fade stays shut until the last
+    // frame is actually showing, so a stalled seek cannot reveal the still.
+    // Scrolling up clears the fade first; only then does the clip rewind.
+    // The assembly start/end mapping is unchanged.
     const applyFade = () => {
       if (reduceMotion) {
         lights.style.opacity = '1'
+        return
+      }
+      if (!showingLastFrame()) {
+        lights.style.opacity = '0'
         return
       }
       const rect = section.getBoundingClientRect()
@@ -175,22 +207,17 @@ export function Home() {
     const warm = () => {
       if (warmed || cancelled) return
       warmed = true
-      const next = targetTime()
-      if (reduceMotion || (next != null && next > frameDuration)) {
-        onScroll()
-        return
+      if (video.preload !== 'auto') {
+        video.preload = 'auto'
+        video.load()
       }
-      let finished = false
-      const finish = () => {
-        if (finished || cancelled) return
-        finished = true
-        video.pause()
-        onScroll()
-      }
-      video.addEventListener('playing', finish, { once: true })
-      const pending = video.play()
-      if (pending && typeof pending.then === 'function') pending.catch(finish)
-      else finish()
+      onScroll()
+    }
+
+    const onEnded = () => {
+      seeking = false
+      if (!video.paused) video.pause()
+      applyFade()
     }
 
     let mediaTries = 0
@@ -207,25 +234,23 @@ export function Home() {
     video.addEventListener('loadedmetadata', onScroll)
     video.addEventListener('canplay', onScroll)
     video.addEventListener('progress', onScroll)
+    video.addEventListener('timeupdate', onScroll)
     video.addEventListener('seeked', onSeeked)
+    video.addEventListener('ended', onEnded)
     video.addEventListener('waiting', armWatch)
     video.addEventListener('error', onVideoError)
     applyFade()
     if (video.readyState >= 1) onScroll()
 
-    // Metadata only until the assembly is near. A full preload of the 13MB
-    // clip, plus the head link, was stalling the page and the photos below.
+    // Metadata only on first paint. Start the full download a couple of
+    // screens early so the scrub can reach the last frame before the fade.
     const near = new IntersectionObserver(
       (entries) => {
         if (cancelled || !entries.some((entry) => entry.isIntersecting)) return
         near.disconnect()
-        if (video.preload !== 'auto') {
-          video.preload = 'auto'
-          if (video.readyState < 2) video.load()
-        }
         warm()
       },
-      { rootMargin: '100% 0px' },
+      { rootMargin: '200% 0px' },
     )
     near.observe(section)
 
@@ -243,7 +268,9 @@ export function Home() {
       video.removeEventListener('loadedmetadata', onScroll)
       video.removeEventListener('canplay', onScroll)
       video.removeEventListener('progress', onScroll)
+      video.removeEventListener('timeupdate', onScroll)
       video.removeEventListener('seeked', onSeeked)
+      video.removeEventListener('ended', onEnded)
       video.removeEventListener('waiting', armWatch)
       video.removeEventListener('error', onVideoError)
       window.removeEventListener('scroll', onScroll)
