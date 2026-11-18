@@ -78,21 +78,28 @@ export function Home() {
       }, 420)
     }
 
+    const scrubMetrics = () => {
+      const stage = section.querySelector('.page2-stage')
+      const stageHeight = stage?.getBoundingClientRect().height ?? section.getBoundingClientRect().height
+      const viewport = window.innerHeight
+      // First frame when two-thirds of the picture is visible. The remaining
+      // frames are spread across 1.8 viewports of scroll, not the short gap
+      // until the picture merely fills the screen.
+      const start = viewport - (stageHeight * 2) / 3
+      const scrubSpan = viewport * 1.8
+      const fadeSpan = Math.min(180, Math.max(96, viewport * 0.12))
+      const traveled = start - section.getBoundingClientRect().top
+      return { scrubSpan, fadeSpan, traveled }
+    }
+
     const targetTime = () => {
       const duration = video.duration
       if (!Number.isFinite(duration) || duration <= 0) return null
       const frameCount = Math.max(1, Math.round(duration / frameDuration))
-      if (reduceMotion) return (frameCount - 1) * frameDuration
-      const rect = section.getBoundingClientRect()
-      const viewport = window.innerHeight
-      const height = rect.height
-      // First frame until 2/3 of the section is visible.
-      const start = viewport - (height * 2) / 3
-      // Last frame once the section is fully on screen, or fills the viewport if it is taller.
-      const end = height <= viewport ? viewport - height : 0
-      const span = start - end
-      const progress =
-        span <= 0 ? (rect.top <= end ? 1 : 0) : Math.min(1, Math.max(0, (start - rect.top) / span))
+      const last = Math.min(duration, (frameCount - 1) * frameDuration)
+      if (reduceMotion) return last
+      const { scrubSpan, traveled } = scrubMetrics()
+      const progress = Math.min(1, Math.max(0, traveled / scrubSpan))
       const index = Math.round(progress * (frameCount - 1))
       return index * frameDuration
     }
@@ -120,10 +127,11 @@ export function Home() {
         applyFade()
         return
       }
-      // Ahead of the buffer, play forward. Seeking past the buffered range
-      // aborts the in-flight request and leaves the playhead stuck mid-clip.
-      if (drift > 0 && !holds(next)) {
+      // Scrolling forward never jumps to a far frame. If more than one frame
+      // is still ahead, or that frame is not buffered, play through the gap.
+      if (drift > frameDuration * 1.05 || (drift > 0 && !holds(next))) {
         if (video.paused) {
+          video.playbackRate = 1
           const pending = video.play()
           if (pending && typeof pending.catch === 'function') pending.catch(() => armWatch())
         }
@@ -172,11 +180,9 @@ export function Home() {
       return video.currentTime >= last - frameDuration * 0.45
     }
 
-    // Scrub still ends when the figure is fully in view, and a short further
-    // scroll fades the lights-on still. That fade stays shut until the last
-    // frame is actually showing, so a stalled seek cannot reveal the still.
-    // Scrolling up clears the fade first; only then does the clip rewind.
-    // The assembly start/end mapping is unchanged.
+    // After the long scrub, a short further scroll fades the lights-on still.
+    // The fade stays shut until the last frame is actually showing. Scrolling
+    // up clears that fade before the clip rewinds.
     const applyFade = () => {
       if (reduceMotion) {
         lights.style.opacity = '1'
@@ -186,12 +192,8 @@ export function Home() {
         lights.style.opacity = '0'
         return
       }
-      const rect = section.getBoundingClientRect()
-      const viewport = window.innerHeight
-      const height = rect.height
-      const videoEnd = height <= viewport ? viewport - height : 0
-      const fadeSpan = Math.min(180, Math.max(96, viewport * 0.12))
-      const fade = Math.min(1, Math.max(0, (videoEnd - rect.top) / fadeSpan))
+      const { scrubSpan, fadeSpan, traveled } = scrubMetrics()
+      const fade = Math.min(1, Math.max(0, (traveled - scrubSpan) / fadeSpan))
       lights.style.opacity = fade.toFixed(4)
     }
 
@@ -346,14 +348,14 @@ export function Home() {
             decoding="async"
             aria-hidden="true"
           />
-        </div>
-        <div className="page2-copy">
-          <h2>It doesn’t look much like a robot.</h2>
-          <p>
-            Nomo sits between the cards and your hands. The wraparound screen around its neck
-            brings dodges, HP bars, and moves to the whole table—no more huddling around a single
-            screen.
-          </p>
+          <div className="page2-copy">
+            <h2>It doesn’t look much like a robot.</h2>
+            <p>
+              Nomo sits between the cards and your hands. The wraparound screen around its neck
+              brings dodges, HP bars, and moves to the whole table—no more huddling around a single
+              screen.
+            </p>
+          </div>
         </div>
       </section>
 
