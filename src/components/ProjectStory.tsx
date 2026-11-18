@@ -22,11 +22,7 @@ export function ProjectStory() {
     <>
       <section className="project-intro" aria-label="Project">
         <div className="inset">
-          <motion.h2 {...rise()}>
-            Nomo
-            <br />
-            Tabletop companion
-          </motion.h2>
+          <motion.h2 {...rise()}>Nomo</motion.h2>
           <motion.p className="project-duration" {...rise(0.04)}>
             June 2026 – Present.
           </motion.p>
@@ -35,9 +31,7 @@ export function ProjectStory() {
             <span>Interaction Design</span>
           </motion.div>
           <motion.p className="project-lede" {...rise(0.12)}>
-            Nomo is a tabletop companion that sits between the cards and your hands. The wraparound
-            screen around its neck brings dodges, HP bars, and moves to the whole table—no more
-            huddling around a single screen.
+            Nomo is a tabletop companion robot to enhance board game social interaction and gameplay experience.
           </motion.p>
         </div>
       </section>
@@ -78,12 +72,10 @@ export function ProjectStory() {
             Challenge
           </motion.p>
           <motion.p className="story-body" {...rise(0.05)}>
-            Offline has the people and the product, but no reliable way to start a match and keep
-            it going. The heat is in collecting; the gap is at the table.
+            Offline products struggle to get existing players to bring in new ones, and the barrier for beginners is high. Even players in the same circle find it hard to break the ice.
           </motion.p>
           <motion.p className="story-body" {...rise(0.08)}>
-            Online wins on visuals, then loses the room. What’s missing is the teasing and
-            encouragement that happens between friends.
+            Online games, meanwhile, are more visually appealing.
           </motion.p>
         </div>
         <figure className="story-pane story-photo scrim">
@@ -124,12 +116,10 @@ export function ProjectStory() {
             Opportunity
           </motion.p>
           <motion.p className="story-body" {...rise(0.05)}>
-            Not an all-purpose companion. A quiet indoor role: set the atmosphere, get a match
-            started, and make the table want another round.
+            Online games are weakly social, and player churn is high. Many offline tabletop games already have a community effect.
           </motion.p>
           <motion.p className="story-body" {...rise(0.08)}>
-            How might we bring the visual punch a table lacks, and the in-the-room presence a
-            screen can’t give?
+            The opportunity is to provide visual stimulus, instant emotional interaction, and a lift in the mood at the table.
           </motion.p>
         </div>
       </section>

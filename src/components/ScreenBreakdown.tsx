@@ -1,4 +1,4 @@
-const diagramSrc = `${import.meta.env.BASE_URL}ux-breakdown.jpg`
+const diagramSrc = `${import.meta.env.BASE_URL}ux-breakdown-v2.jpg`
 const demoUrl = 'https://cai7777777cheng.github.io/Table-robot-function/'
 
 export function ScreenBreakdown({ id }: { id?: string }) {
