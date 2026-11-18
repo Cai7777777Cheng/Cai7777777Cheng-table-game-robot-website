@@ -286,6 +286,18 @@ a { color: inherit; text-decoration: none; }
   padding: 6.75rem 0 4.5rem;
   background: #fff;
 }
+.project-intro .inset {
+  width: auto;
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
+  text-align: right;
+}
+.project-intro .about-chips {
+  justify-content: flex-end;
+}
+.project-intro .project-lede {
+  margin-left: auto;
+}
 .project-intro h2 {
   margin: 0;
   color: #111;
@@ -418,11 +430,11 @@ a { color: inherit; text-decoration: none; }
 }
 .story-copy {
   box-sizing: border-box;
-  padding: 1.15rem 0.35rem 2.5rem 0.85rem;
+  padding: 1.15rem 0 2.5rem 0.85rem;
   background: #fff;
 }
 .story-copy .story-body {
-  max-width: 28rem;
+  max-width: none;
 }
 .story-copy .story-body + .story-body {
   margin-top: 0.85rem;
