@@ -8,7 +8,7 @@ const coverSrc = `${import.meta.env.BASE_URL}hero-v5.jpg`
 const assembleSrc = `${import.meta.env.BASE_URL}page2-assemble.mp4`
 const assemblePoster = `${import.meta.env.BASE_URL}page2-assemble-poster.jpg`
 const assembleEnd = `${import.meta.env.BASE_URL}page2-assemble-end.jpg`
-const lightsSrc = `${import.meta.env.BASE_URL}page2-lights-on.png`
+const lightsSrc = `${import.meta.env.BASE_URL}page2-lights-on.jpg`
 const repoUrl = 'https://github.com/Cai7777777Cheng/Table-robot-function'
 
 const features = [
@@ -193,19 +193,42 @@ export function Home() {
       else finish()
     }
 
+    let mediaTries = 0
+    const onVideoError = () => {
+      if (cancelled || mediaTries >= 1) return
+      mediaTries += 1
+      video.load()
+    }
+
     video.muted = true
     video.defaultMuted = true
     video.playsInline = true
-    video.preload = 'auto'
+    video.preload = 'metadata'
     video.addEventListener('loadedmetadata', onScroll)
-    video.addEventListener('loadeddata', warm)
     video.addEventListener('canplay', onScroll)
     video.addEventListener('progress', onScroll)
     video.addEventListener('seeked', onSeeked)
     video.addEventListener('waiting', armWatch)
+    video.addEventListener('error', onVideoError)
     applyFade()
-    if (video.readyState >= 2) warm()
-    else if (video.readyState >= 1) onScroll()
+    if (video.readyState >= 1) onScroll()
+
+    // Metadata only until the assembly is near. A full preload of the 13MB
+    // clip, plus the head link, was stalling the page and the photos below.
+    const near = new IntersectionObserver(
+      (entries) => {
+        if (cancelled || !entries.some((entry) => entry.isIntersecting)) return
+        near.disconnect()
+        if (video.preload !== 'auto') {
+          video.preload = 'auto'
+          if (video.readyState < 2) video.load()
+        }
+        warm()
+      },
+      { rootMargin: '100% 0px' },
+    )
+    near.observe(section)
+
     if (!reduceMotion) {
       window.addEventListener('scroll', onScroll, { passive: true })
       window.addEventListener('resize', onScroll, { passive: true })
@@ -215,13 +238,14 @@ export function Home() {
       cancelled = true
       clearWatch()
       if (raf) cancelAnimationFrame(raf)
+      near.disconnect()
       video.pause()
       video.removeEventListener('loadedmetadata', onScroll)
-      video.removeEventListener('loadeddata', warm)
       video.removeEventListener('canplay', onScroll)
       video.removeEventListener('progress', onScroll)
       video.removeEventListener('seeked', onSeeked)
       video.removeEventListener('waiting', armWatch)
+      video.removeEventListener('error', onVideoError)
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onScroll)
     }
@@ -279,7 +303,7 @@ export function Home() {
             poster={reduceMotion ? assembleEnd : assemblePoster}
             muted
             playsInline
-            preload="auto"
+            preload="metadata"
             width={2560}
             height={1440}
             aria-label="Nomo assembling on the table: the body, then the neck, then the wraparound screen"
@@ -291,6 +315,8 @@ export function Home() {
             alt=""
             width={3840}
             height={2160}
+            loading="lazy"
+            decoding="async"
             aria-hidden="true"
           />
         </div>
