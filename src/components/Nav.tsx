@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 
-const personalSiteUrl = 'https://peng-chengxu.deed.page/'
-
 const sections = [
   { id: 'promise', label: 'Screen' },
   { id: 'features', label: 'Table' },
@@ -12,9 +10,10 @@ const sections = [
 
 export function Nav() {
   const { pathname } = useLocation()
-  const onPrototype = pathname.replace(/\/+$/, '') === '/prototype'
+  const path = pathname.replace(/\/+$/, '') || '/'
+  const onLongPage = path === '/' || path === '/features' || path === '/prototype'
   const [stuck, setStuck] = useState(false)
-  const [active, setActive] = useState('promise')
+  const [active, setActive] = useState(path === '/prototype' ? 'ux' : 'promise')
 
   useEffect(() => {
     const onScroll = () => setStuck(window.scrollY > window.innerHeight * 0.72)
@@ -38,10 +37,10 @@ export function Nav() {
     )
     nodes.forEach((node) => observer.observe(node))
     return () => observer.disconnect()
-  }, [])
+  }, [pathname])
 
   return (
-    <header className={stuck || onPrototype ? 'nav stuck' : 'nav'}>
+    <header className={stuck ? 'nav stuck' : 'nav'}>
       <Link to="/" className="mark">
         Nomo
       </Link>
@@ -49,26 +48,18 @@ export function Nav() {
         {sections.map((section) => (
           <a
             key={section.id}
-            href={`/#${section.id}`}
-            className={
-              section.id === 'ux'
-                ? onPrototype || (stuck && active === section.id)
-                  ? 'on'
-                  : undefined
-                : !onPrototype && stuck && active === section.id
-                  ? 'on'
-                  : undefined
-            }
+            href={`#${section.id}`}
+            className={onLongPage && stuck && active === section.id ? 'on' : undefined}
           >
             {section.label}
           </a>
         ))}
       </nav>
-      <div className="nav-end">
-        <a className="nav-return" href={personalSiteUrl}>
+      <div className="nav-actions">
+        <a className="nav-personal" href="https://peng-chengxu.deed.page/">
           Personal site
         </a>
-        <a className="pill" href="/#ux">
+        <a className="pill" href="#ux">
           Open prototype
         </a>
       </div>

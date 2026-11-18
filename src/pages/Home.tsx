@@ -3,10 +3,12 @@ import { motion, useReducedMotion } from 'framer-motion'
 import { ProjectStory } from '../components/ProjectStory.tsx'
 import { ScreenBreakdown } from '../components/ScreenBreakdown.tsx'
 
-const heroSrc = `${import.meta.env.BASE_URL}hero.jpg`
+const heroSrc = `${import.meta.env.BASE_URL}hero-v4.jpg`
 const coverSrc = `${import.meta.env.BASE_URL}hero-v5.jpg`
-const page2VideoSrc = `${import.meta.env.BASE_URL}page2-assemble.mp4`
-const page2PosterSrc = `${import.meta.env.BASE_URL}page2-assemble-poster.jpg`
+const assembleSrc = `${import.meta.env.BASE_URL}page2-assemble.mp4`
+const assemblePoster = `${import.meta.env.BASE_URL}page2-assemble-poster.jpg`
+const assembleEnd = `${import.meta.env.BASE_URL}page2-assemble-end.jpg`
+const lightsSrc = `${import.meta.env.BASE_URL}page2-lights-on.png`
 const repoUrl = 'https://github.com/Cai7777777Cheng/Table-robot-function'
 
 const features = [
@@ -26,156 +28,205 @@ const features = [
 
 const ease = [0.22, 1, 0.36, 1] as const
 
-function page2Progress(figure: HTMLElement) {
-  const rect = figure.getBoundingClientRect()
-  const viewHeight = window.innerHeight
-  const startTop = viewHeight / 3
-  const endTop = rect.height >= viewHeight ? 0 : Math.max(0, viewHeight - rect.height)
-  const span = startTop - endTop
-  if (span <= 0) return rect.top <= startTop ? 1 : 0
-  return Math.min(1, Math.max(0, (startTop - rect.top) / span))
-}
-
-function Page2Assemble({ reduce }: { reduce: boolean }) {
-  const figureRef = useRef<HTMLElement>(null)
+export function Home() {
+  const reduce = useReducedMotion()
+  const reduceMotion = reduce === true
+  const page2Ref = useRef<HTMLElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
+  const lightsRef = useRef<HTMLImageElement>(null)
 
   useEffect(() => {
-    const figure = figureRef.current
+    const section = page2Ref.current
     const video = videoRef.current
-    if (!figure || !video) return
+    const lights = lightsRef.current
+    if (!section || !video || !lights) return
 
-    let frame = 0
+    const frameDuration = 1 / 30
+    let raf = 0
+    let watch = 0
     let cancelled = false
-    let primed = false
     let seeking = false
-    let want = 0
+    let warmed = false
+    let lastAssigned = -1
+    let force = false
 
-    const endTime = () => {
-      const duration = video.duration
-      if (!Number.isFinite(duration) || duration <= 0) return 0
-      return Math.max(0, duration - 1 / 30)
+    const clearWatch = () => {
+      if (!watch) return
+      window.clearTimeout(watch)
+      watch = 0
     }
 
-    const covers = (time: number) => {
+    // One seek at a time. Setting currentTime on every frame cancels the
+    // in-flight range request, so the first pass never lands and the clip
+    // stays frozen until a later scroll happens to stick.
+    const armWatch = () => {
+      if (watch || cancelled) return
+      watch = window.setTimeout(() => {
+        watch = 0
+        if (cancelled) return
+        const next = targetTime()
+        const moved = next != null && Math.abs(lastAssigned - next) >= frameDuration * 0.45
+        if (moved) {
+          // The scroll moved on while the previous range request was still open.
+          seeking = false
+          lastAssigned = -1
+          force = true
+          step()
+          return
+        }
+        if (seeking || video.seeking) armWatch()
+      }, 420)
+    }
+
+    const targetTime = () => {
+      const duration = video.duration
+      if (!Number.isFinite(duration) || duration <= 0) return null
+      const frameCount = Math.max(1, Math.round(duration / frameDuration))
+      if (reduceMotion) return (frameCount - 1) * frameDuration
+      const rect = section.getBoundingClientRect()
+      const viewport = window.innerHeight
+      const height = rect.height
+      // First frame until 2/3 of the section is visible.
+      const start = viewport - (height * 2) / 3
+      // Last frame once the section is fully on screen, or fills the viewport if it is taller.
+      const end = height <= viewport ? viewport - height : 0
+      const span = start - end
+      const progress =
+        span <= 0 ? (rect.top <= end ? 1 : 0) : Math.min(1, Math.max(0, (start - rect.top) / span))
+      const index = Math.round(progress * (frameCount - 1))
+      return index * frameDuration
+    }
+
+    const holds = (time: number) => {
       const ranges = video.buffered
       for (let i = 0; i < ranges.length; i++) {
-        if (time >= ranges.start(i) - 0.05 && time <= ranges.end(i) + 0.001) return true
+        if (time >= ranges.start(i) - 0.04 && time <= ranges.end(i) + 0.04) return true
       }
       return false
     }
 
-    const nearestBuffered = (time: number) => {
-      const ranges = video.buffered
-      if (ranges.length === 0) return null
-      let best = ranges.start(0)
-      let bestDist = Math.abs(best - time)
-      for (let i = 0; i < ranges.length; i++) {
-        const clamped = Math.min(ranges.end(i), Math.max(ranges.start(i), time))
-        const dist = Math.abs(clamped - time)
-        if (dist < bestDist) {
-          best = clamped
-          bestDist = dist
-        }
+    const step = () => {
+      if (cancelled) return
+      const next = targetTime()
+      if (next == null || video.readyState < 1) {
+        armWatch()
+        return
       }
-      return best
-    }
-
-    const apply = () => {
-      frame = 0
-      if (cancelled || seeking || video.readyState < 2) return
-      const end = endTime()
-      if (end <= 0) return
-      want = reduce ? end : page2Progress(figure) * end
-      const target = covers(want) ? want : nearestBuffered(want)
-      if (target == null || Math.abs(video.currentTime - target) < 1 / 60) return
+      // Leave the in-flight seek alone. Replacing currentTime on every frame
+      // aborts its range request, which is what froze the first pass.
+      if ((seeking || video.seeking) && !force) {
+        seeking = true
+        armWatch()
+        return
+      }
+      force = false
+      if (Math.abs(video.currentTime - next) < frameDuration * 0.45) {
+        seeking = false
+        clearWatch()
+        return
+      }
+      if (!holds(next) && Math.abs(lastAssigned - next) < frameDuration * 0.45) {
+        armWatch()
+        return
+      }
       seeking = true
-      video.currentTime = target
-    }
-
-    const schedule = () => {
-      if (frame) return
-      frame = requestAnimationFrame(apply)
+      lastAssigned = next
+      try {
+        video.currentTime = next
+        armWatch()
+      } catch {
+        seeking = false
+        armWatch()
+      }
     }
 
     const onSeeked = () => {
       seeking = false
-      if (cancelled) return
-      if (Math.abs(video.currentTime - want) > 1 / 30) apply()
+      clearWatch()
+      step()
     }
 
-    const wakeDecoder = () => {
-      if (primed || reduce) return
-      primed = true
-      video.muted = true
-      const pending = video.play()
-      const settle = () => {
-        if (cancelled) return
-        video.pause()
-        apply()
+    // Video scrub ends when the figure is fully in view. A short further
+    // scroll fades the lights-on still in. Scrolling up clears that fade
+    // before the clip rewinds. The assembly start/end mapping is unchanged.
+    const applyFade = () => {
+      if (reduceMotion) {
+        lights.style.opacity = '1'
+        return
       }
-      if (pending && typeof pending.then === 'function') pending.then(settle, settle)
-      else settle()
+      const rect = section.getBoundingClientRect()
+      const viewport = window.innerHeight
+      const height = rect.height
+      const videoEnd = height <= viewport ? viewport - height : 0
+      const fadeSpan = Math.min(180, Math.max(96, viewport * 0.12))
+      const fade = Math.min(1, Math.max(0, (videoEnd - rect.top) / fadeSpan))
+      lights.style.opacity = fade.toFixed(4)
     }
 
-    const onReady = () => {
-      if (video.readyState >= 2) apply()
-      if (video.readyState >= 3) wakeDecoder()
+    const onScroll = () => {
+      if (raf) return
+      raf = requestAnimationFrame(() => {
+        raf = 0
+        applyFade()
+        step()
+      })
     }
 
-    video.preload = 'auto'
+    const warm = () => {
+      if (warmed || cancelled) return
+      warmed = true
+      const next = targetTime()
+      if (reduceMotion || (next != null && next > frameDuration)) {
+        onScroll()
+        return
+      }
+      let finished = false
+      const finish = () => {
+        if (finished || cancelled) return
+        finished = true
+        video.pause()
+        onScroll()
+      }
+      video.addEventListener('playing', finish, { once: true })
+      const pending = video.play()
+      if (pending && typeof pending.then === 'function') pending.catch(finish)
+      else finish()
+    }
+
     video.muted = true
-    video.addEventListener('loadeddata', onReady)
-    video.addEventListener('canplay', onReady)
-    video.addEventListener('progress', schedule)
+    video.defaultMuted = true
+    video.playsInline = true
+    video.preload = 'auto'
+    video.addEventListener('loadedmetadata', onScroll)
+    video.addEventListener('loadeddata', warm)
+    video.addEventListener('canplay', onScroll)
+    video.addEventListener('progress', onScroll)
     video.addEventListener('seeked', onSeeked)
-    if (video.readyState >= 2) onReady()
-    if (!reduce) {
-      window.addEventListener('scroll', schedule, { passive: true })
-      window.addEventListener('resize', schedule, { passive: true })
+    video.addEventListener('waiting', armWatch)
+    applyFade()
+    if (video.readyState >= 2) warm()
+    else if (video.readyState >= 1) onScroll()
+    if (!reduceMotion) {
+      window.addEventListener('scroll', onScroll, { passive: true })
+      window.addEventListener('resize', onScroll, { passive: true })
     }
 
     return () => {
       cancelled = true
+      clearWatch()
+      if (raf) cancelAnimationFrame(raf)
       video.pause()
-      video.removeEventListener('loadeddata', onReady)
-      video.removeEventListener('canplay', onReady)
-      video.removeEventListener('progress', schedule)
+      video.removeEventListener('loadedmetadata', onScroll)
+      video.removeEventListener('loadeddata', warm)
+      video.removeEventListener('canplay', onScroll)
+      video.removeEventListener('progress', onScroll)
       video.removeEventListener('seeked', onSeeked)
-      window.removeEventListener('scroll', schedule)
-      window.removeEventListener('resize', schedule)
-      if (frame) cancelAnimationFrame(frame)
+      video.removeEventListener('waiting', armWatch)
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
     }
-  }, [reduce])
+  }, [reduceMotion])
 
-  return (
-    <figure className="bleed page2" id="promise" ref={figureRef}>
-      <video
-        ref={videoRef}
-        className="page2-video"
-        src={page2VideoSrc}
-        poster={page2PosterSrc}
-        muted
-        playsInline
-        preload="auto"
-        width={2560}
-        height={1440}
-        aria-label="Nomo assembling on the table"
-      />
-      <figcaption className="page2-copy">
-        <h2>It doesn’t look much like a robot.</h2>
-        <p>
-          Nomo sits between the cards and your hands. The wraparound screen around its neck
-          brings dodges, HP bars, and moves to the whole table—no more huddling around a single
-          screen.
-        </p>
-      </figcaption>
-    </figure>
-  )
-}
-
-export function Home() {
-  const reduce = useReducedMotion()
   const rise = (delay = 0) =>
     reduce
       ? {}
@@ -206,35 +257,70 @@ export function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, ease }}
         >
-          <h1>Nomo</h1>
-          <p>Tabletop companion</p>
           <a className="pill light" href="#lab">
             see more details
           </a>
         </motion.div>
       </section>
 
-      <Page2Assemble reduce={reduce === true} />
-
       <ProjectStory />
 
+      <section
+        className="page2"
+        id="promise"
+        ref={page2Ref}
+        aria-label="It doesn’t look much like a robot"
+      >
+        <div className="page2-stage">
+          <video
+            ref={videoRef}
+            className="page2-video"
+            src={assembleSrc}
+            poster={reduceMotion ? assembleEnd : assemblePoster}
+            muted
+            playsInline
+            preload="auto"
+            width={2560}
+            height={1440}
+            aria-label="Nomo assembling on the table: the body, then the neck, then the wraparound screen"
+          />
+          <img
+            ref={lightsRef}
+            className="page2-lights"
+            src={lightsSrc}
+            alt=""
+            width={3840}
+            height={2160}
+            aria-hidden="true"
+          />
+        </div>
+        <div className="page2-copy">
+          <h2>It doesn’t look much like a robot.</h2>
+          <p>
+            Nomo sits between the cards and your hands. The wraparound screen around its neck
+            brings dodges, HP bars, and moves to the whole table—no more huddling around a single
+            screen.
+          </p>
+        </div>
+      </section>
+
       <section className="table-band" id="features" aria-label="Table">
-        <h2>
+        <motion.h2 {...rise()}>
           A ring of light.
           <br />
           The whole table can see.
-        </h2>
+        </motion.h2>
         <ol className="table-list">
           {features.map((item, index) => (
-            <li key={item.title} className={index === 1 ? 'frame-left' : 'frame-right'}>
+            <li key={item.title} className={index % 2 === 0 ? 'side-right' : 'side-left'}>
               <div className="table-copy">
                 <span className="table-num">{index + 1}</span>
                 <h3>{item.title}</h3>
                 <p>{item.body}</p>
               </div>
-              <div className="table-frame" role="img" aria-label="Photo to come">
+              <figure className="table-frame" aria-label="Photo to come">
                 <span>Photo to come</span>
-              </div>
+              </figure>
             </li>
           ))}
         </ol>
@@ -264,7 +350,7 @@ export function Home() {
           <h2>The screen, taken apart.</h2>
           <p>Status, expression, skill, and the world behind the character.</p>
           <div className="actions">
-            <a className="pill" href="/#ux">
+            <a className="pill" href="#ux">
               Open the prototype
             </a>
             <a className="quiet-link" href={repoUrl} target="_blank" rel="noreferrer">
@@ -281,7 +367,7 @@ export function Home() {
         <div className="close-veil" />
         <div className="close-copy">
           <h2>Screen UX Breakdown.</h2>
-          <a className="pill" href="/#ux">
+          <a className="pill" href="#ux">
             Open the prototype
           </a>
         </div>

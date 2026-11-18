@@ -11,16 +11,14 @@ function ScrollWithRoute() {
 
   useEffect(() => {
     document.title = path === '/prototype' ? 'Prototype — Nomo' : 'Nomo — Tabletop companion'
-    const fromPath = path === '/features' ? 'features' : path === '/prototype' ? 'ux' : ''
-    const id = fromPath || hash.replace('#', '')
+    if ('scrollRestoration' in window.history) window.history.scrollRestoration = 'manual'
     const root = document.documentElement
     const previous = root.style.scrollBehavior
     root.style.scrollBehavior = 'auto'
-    if (id) {
-      document.getElementById(id)?.scrollIntoView()
-    } else {
-      window.scrollTo(0, 0)
-    }
+    const hashId = hash.replace('#', '')
+    const id = hashId || (path === '/prototype' ? 'ux' : path === '/features' ? 'features' : '')
+    if (id) document.getElementById(id)?.scrollIntoView()
+    else window.scrollTo(0, 0)
     root.style.scrollBehavior = previous
   }, [path, hash])
 
