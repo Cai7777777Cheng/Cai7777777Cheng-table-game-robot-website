@@ -335,12 +335,13 @@ a { color: inherit; text-decoration: none; }
 }
 .project-lede {
   margin: 2.15rem 0 0;
-  max-width: 38rem;
+  max-width: none;
   color: #6d6d6d;
   font-size: 0.875rem; /* 14px */
   font-weight: 500;
   letter-spacing: 0;
   line-height: 1.2;
+  white-space: nowrap;
 }
 
 .gym-scene {
