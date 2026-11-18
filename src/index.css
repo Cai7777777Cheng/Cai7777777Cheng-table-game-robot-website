@@ -451,10 +451,6 @@ a { color: inherit; text-decoration: none; }
   font-size: 1.15rem;
   line-height: 1.7;
 }
-.trend-lead {
-  padding: 5.5rem 0 2.75rem;
-  background: #fff;
-}
 .story-block {
   padding-top: 4.6rem;
   background: #fff;
@@ -477,37 +473,9 @@ a { color: inherit; text-decoration: none; }
 }
 .hmw-line .keep { white-space: nowrap; }
 
-.stat-photo {
-  position: relative;
-  margin: 0;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  background: #111;
-  overflow: hidden;
-}
-.stat-photo img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: center;
-}
-.stat-photo.scrim::before {
-  content: "";
-  position: absolute;
-  z-index: 1;
-  inset: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(ellipse 72% 78% at 18% 100%, rgba(0, 0, 0, 0.62) 0%, rgba(0, 0, 0, 0.3) 46%, rgba(0, 0, 0, 0) 72%),
-    linear-gradient(to top, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 36%);
-}
 .stat-photo-copy {
   position: absolute;
   z-index: 2;
-  left: max(1.5rem, calc((100% - 72rem) / 2));
-  bottom: clamp(1.6rem, 4.6vw, 3.4rem);
-  max-width: min(36rem, calc(100% - 3rem));
   color: #fff;
 }
 .stat-num {
@@ -517,33 +485,126 @@ a { color: inherit; text-decoration: none; }
   line-height: 0.88;
   white-space: nowrap;
 }
-.stat-photo .stat-num {
-  color: #fff;
-  font-size: clamp(3.5rem, 9.2vw, 7.75rem);
+.story-split {
+  display: grid;
+  grid-template-columns: 56fr 44fr;
+  gap: 1.15rem;
+  align-items: start;
+  width: min(72rem, calc(100% - 3.2rem));
+  margin: 0 auto;
+  padding: 0 0 1.15rem;
+  background: #fff;
 }
-.stat-photo .stat-line {
-  margin: 0.7rem 0 0;
-  max-width: 26rem;
-  color: #fff;
-  font-size: clamp(1rem, 1.45vw, 1.22rem);
-  font-weight: 500;
+.story-split.wide-right {
+  grid-template-columns: 44fr 56fr;
+}
+.story-pane {
+  min-width: 0;
+}
+.story-copy {
+  box-sizing: border-box;
+  padding: 1.15rem 0.35rem 2.5rem 0.85rem;
+  background: #fff;
+}
+.story-copy .story-body {
+  max-width: 28rem;
+}
+.story-copy .story-body + .story-body {
+  margin-top: 1.15rem;
+}
+.stat-type-pane {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 110vh;
+  padding: 3.4rem 3.1rem 5.5rem;
+  background: #f0f0f0;
+  border-radius: 1.6rem;
+}
+.stat-type-pane .stat-num {
+  color: #111;
+  font-size: clamp(5.4rem, 12vw, 9.25rem);
+}
+.stat-type-pane .stat-line {
+  margin: 2.1rem 0 0;
+  max-width: 18rem;
+  color: #6d6d6d;
+  font-size: clamp(1.35rem, 2vw, 1.7rem);
+  font-weight: 400;
   line-height: 1.35;
 }
-.stat-type {
-  background: #f3f3f3;
-  padding: clamp(4.75rem, 9vw, 7.5rem) 0;
-}
-.stat-type .stat-num {
-  color: #111;
-  font-size: clamp(4rem, 11vw, 8.5rem);
-}
-.stat-type .stat-line {
-  margin: 0.95rem 0 0;
-  max-width: 36rem;
-  color: #6d6d6d;
-  font-size: clamp(1.05rem, 1.5vw, 1.28rem);
+.stat-source {
+  position: absolute;
+  left: 3.1rem;
+  right: 3.1rem;
+  bottom: 1.4rem;
+  margin: 0;
+  color: #9a9a9a;
+  font-size: 0.7rem;
   font-weight: 400;
-  line-height: 1.45;
+  letter-spacing: 0.01em;
+  line-height: 1.4;
+}
+.story-photo {
+  position: relative;
+  margin: 0;
+  min-height: 110vh;
+  background: #111;
+  overflow: hidden;
+  border-radius: 1.6rem;
+}
+.story-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 110vh;
+  object-fit: cover;
+  object-position: center;
+}
+.story-photo.scrim::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 62% 28% at 100% 0%, rgba(0, 0, 0, 0.48) 0%, rgba(0, 0, 0, 0) 70%),
+    radial-gradient(ellipse 80% 72% at 16% 100%, rgba(0, 0, 0, 0.62) 0%, rgba(0, 0, 0, 0.28) 48%, rgba(0, 0, 0, 0) 74%),
+    linear-gradient(to top, rgba(0, 0, 0, 0.22) 0%, rgba(0, 0, 0, 0) 38%);
+}
+.story-source {
+  position: absolute;
+  z-index: 2;
+  top: 1.15rem;
+  right: 1.25rem;
+  margin: 0;
+  max-width: 18rem;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.35;
+  text-align: right;
+}
+.story-photo .stat-photo-copy {
+  left: 1.7rem;
+  bottom: 1.8rem;
+  right: 1.4rem;
+  max-width: 22rem;
+}
+.story-photo .stat-num {
+  color: #fff;
+  font-size: clamp(4.2rem, 9.5vw, 7.4rem);
+}
+.story-photo .stat-line {
+  margin: 0.85rem 0 0;
+  max-width: 20rem;
+  color: #fff;
+  font-size: clamp(1.05rem, 1.55vw, 1.35rem);
+  font-weight: 500;
+  line-height: 1.3;
 }
 
 .cards {
@@ -684,14 +745,41 @@ a { color: inherit; text-decoration: none; }
   .inset { width: min(72rem, calc(100% - 2.3rem)); }
   .project-intro { padding: 4.25rem 0 2.75rem; }
   .project-lede, .story-body { font-size: 1.02rem; }
-  .trend-lead { padding: 3.5rem 0 1.75rem; }
   .story-block { padding-top: 3.25rem; }
   .story-end { padding-bottom: 4.25rem; }
   .hmw { padding-top: 3.6rem; }
-  .stat-photo-copy { left: 1.15rem; bottom: 0.9rem; max-width: calc(100% - 2.3rem); }
-  .stat-photo .stat-num { font-size: clamp(2.35rem, 11vw, 3.6rem); }
-  .stat-photo .stat-line { max-width: none; font-size: 0.95rem; }
-  .stat-type .stat-num { font-size: clamp(3.15rem, 16vw, 5.5rem); }
+  .story-split,
+  .story-split.wide-right {
+    grid-template-columns: 1fr;
+    width: calc(100% - 2.3rem);
+    gap: 0.9rem;
+    padding-bottom: 0.9rem;
+  }
+  .story-pane,
+  .story-photo,
+  .stat-type-pane {
+    min-height: 0;
+  }
+  .story-copy {
+    padding: 2.2rem 0.2rem 1.2rem;
+    order: 1;
+  }
+  .stat-type-pane {
+    order: 1;
+    padding: 2.4rem 1.5rem 3.4rem;
+    min-height: 0;
+  }
+  .stat-type-pane .stat-num { font-size: clamp(3.4rem, 18vw, 5.8rem); }
+  .stat-type-pane .stat-line { font-size: 1.15rem; }
+  .story-photo {
+    order: 2;
+    aspect-ratio: 3 / 4;
+    min-height: 0;
+  }
+  .story-photo img { min-height: 0; height: 100%; }
+  .story-photo .stat-photo-copy { left: 1.15rem; bottom: 0.9rem; max-width: calc(100% - 2.3rem); }
+  .story-photo .stat-num { font-size: clamp(2.35rem, 11vw, 3.6rem); }
+  .story-photo .stat-line { max-width: none; font-size: 0.95rem; }
   .nav {
     display: flex;
     justify-content: space-between;

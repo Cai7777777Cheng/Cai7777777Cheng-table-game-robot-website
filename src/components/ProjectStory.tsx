@@ -1,8 +1,8 @@
 import { motion, useReducedMotion } from 'framer-motion'
 
 const gymSrc = `${import.meta.env.BASE_URL}nomo-gym-25d.jpg`
-const photoASrc = `${import.meta.env.BASE_URL}trend-photo-a-gym.jpg`
-const photoBSrc = `${import.meta.env.BASE_URL}trend-photo-b-unused-deck.jpg`
+const photo75Src = `${import.meta.env.BASE_URL}stat-75-collect.jpg`
+const photo64Src = `${import.meta.env.BASE_URL}stat-64-together.jpg`
 
 const ease = [0.22, 1, 0.36, 1] as const
 
@@ -46,15 +46,22 @@ export function ProjectStory() {
         <div className="gym-frame">
           <img
             src={gymSrc}
-            alt="A 2.5D card gym: players at white tables, dragon murals on the wall, and plush toys on the floor"
+            alt="A 2.5D card gym: two players sit face to face at a white table, with a playmat and vertical cards between them"
             width={2560}
             height={1440}
           />
         </div>
       </section>
 
-      <section className="trend-lead" aria-label="Trend">
-        <div className="inset">
+      <section className="story-split" aria-label="Trend">
+        <div className="story-pane stat-type-pane">
+          <p className="stat-num">40%</p>
+          <p className="stat-line">
+            say tabletop games make it easier to open up than regular conversation.
+          </p>
+          <p className="stat-source">Source: Asmodee × Censuswide, July 2025</p>
+        </div>
+        <div className="story-pane story-copy">
           <motion.p className="story-label" {...rise()}>
             Trend
           </motion.p>
@@ -65,50 +72,8 @@ export function ProjectStory() {
         </div>
       </section>
 
-      <section className="stat-photo scrim" aria-label="Stat">
-        <img
-          src={photoASrc}
-          alt="A busy card gym, with a few people seated at tables and many more standing along the wall"
-          width={1280}
-          height={720}
-          loading="lazy"
-        />
-        <div className="stat-photo-copy">
-          <p className="stat-num">{'<30%'}</p>
-          <p className="stat-line">of people at the gym were actually playing.</p>
-        </div>
-      </section>
-
-      <section className="stat-type" aria-label="Stat">
-        <div className="inset">
-          <p className="stat-num">41.25%</p>
-          <p className="stat-line">of users buy Pokémon cards — half only collect.</p>
-        </div>
-      </section>
-
-      <section className="stat-photo" aria-label="Stat">
-        <img
-          src={photoBSrc}
-          alt="Three friends looking at their phones, with a stack of cards left untouched on the table"
-          width={1280}
-          height={720}
-          loading="lazy"
-        />
-        <div className="stat-photo-copy">
-          <p className="stat-num">90%</p>
-          <p className="stat-line">stopped touching the physical cards once the game went online.</p>
-        </div>
-      </section>
-
-      <section className="stat-type" aria-label="Stat">
-        <div className="inset">
-          <p className="stat-num">80%</p>
-          <p className="stat-line">come back only for an event or a new version.</p>
-        </div>
-      </section>
-
-      <section className="story-block" aria-label="Challenge">
-        <div className="inset">
+      <section className="story-split wide-right" aria-label="Challenge">
+        <div className="story-pane story-copy">
           <motion.p className="story-label" {...rise()}>
             Challenge
           </motion.p>
@@ -121,10 +86,40 @@ export function ProjectStory() {
             encouragement that happens between friends.
           </motion.p>
         </div>
+        <figure className="story-pane story-photo scrim">
+          <img
+            src={photo75Src}
+            alt="Two people inspecting a card binder and a sleeved card, with an unused playmat in the foreground"
+            width={864}
+            height={1152}
+            loading="lazy"
+          />
+          <p className="story-source">Source: Circana, March 2025</p>
+          <div className="stat-photo-copy">
+            <p className="stat-num">75%</p>
+            <p className="stat-line">
+              of adult Pokémon card buyers collect or resell — they don’t play.
+            </p>
+          </div>
+        </figure>
       </section>
 
-      <section className="story-block" aria-label="Opportunity">
-        <div className="inset">
+      <section className="story-split" aria-label="Opportunity">
+        <figure className="story-pane story-photo scrim">
+          <img
+            src={photo64Src}
+            alt="Four friends laughing around a white table in the middle of a card game"
+            width={864}
+            height={1152}
+            loading="lazy"
+          />
+          <p className="story-source">Source: Asmodee × Censuswide, July 2025</p>
+          <div className="stat-photo-copy">
+            <p className="stat-num">64%</p>
+            <p className="stat-line">use tabletop games to bring family and friends together.</p>
+          </div>
+        </figure>
+        <div className="story-pane story-copy">
           <motion.p className="story-label" {...rise()}>
             Opportunity
           </motion.p>
@@ -132,17 +127,9 @@ export function ProjectStory() {
             Not an all-purpose companion. A quiet indoor role: set the atmosphere, get a match
             started, and make the table want another round.
           </motion.p>
-        </div>
-      </section>
-
-      <section className="story-block hmw" aria-label="How might we">
-        <div className="inset">
-          <motion.p className="story-label" {...rise()}>
-            How might we
-          </motion.p>
-          <motion.p className="hmw-line" {...rise(0.06)}>
-            How might we bring the visual punch a table lacks, and the{' '}
-            <span className="keep">in-the-room</span> presence a screen can’t give?
+          <motion.p className="story-body" {...rise(0.08)}>
+            How might we bring the visual punch a table lacks, and the in-the-room presence a
+            screen can’t give?
           </motion.p>
         </div>
       </section>
