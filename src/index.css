@@ -381,6 +381,15 @@ a { color: inherit; text-decoration: none; }
   padding-top: 4.6rem;
   background: #fff;
 }
+.story-block .inset {
+  width: auto;
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
+  text-align: right;
+}
+.story-block .story-body {
+  margin-left: auto;
+}
 .story-end {
   padding-bottom: 6.5rem;
 }
