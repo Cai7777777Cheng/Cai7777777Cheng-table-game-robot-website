@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 
 const gymSrc = `${import.meta.env.BASE_URL}nomo-gym-25d.jpg`
@@ -5,6 +6,35 @@ const photo75Src = `${import.meta.env.BASE_URL}stat-75-collect.jpg`
 const photo64Src = `${import.meta.env.BASE_URL}stat-64-together.jpg`
 
 const ease = [0.22, 1, 0.36, 1] as const
+
+function StoryPhoto({
+  src,
+  alt,
+  width,
+  height,
+}: {
+  src: string
+  alt: string
+  width: number
+  height: number
+}) {
+  const tries = useRef(0)
+  return (
+    <img
+      src={src}
+      alt={alt}
+      width={width}
+      height={height}
+      decoding="async"
+      onError={(event) => {
+        const img = event.currentTarget
+        if (tries.current >= 2) return
+        tries.current += 1
+        img.src = `${src}${src.includes('?') ? '&' : '?'}try=${tries.current}`
+      }}
+    />
+  )
+}
 
 export function ProjectStory() {
   const reduce = useReducedMotion()
@@ -79,12 +109,11 @@ export function ProjectStory() {
           </motion.p>
         </div>
         <figure className="story-pane story-photo scrim">
-          <img
+          <StoryPhoto
             src={photo75Src}
             alt="Two people inspecting a card binder and a sleeved card, with an unused playmat in the foreground"
             width={864}
             height={1152}
-            loading="lazy"
           />
           <p className="story-source">Source: Circana, March 2025</p>
           <div className="stat-photo-copy">
@@ -98,12 +127,11 @@ export function ProjectStory() {
 
       <section className="story-split" aria-label="Opportunity">
         <figure className="story-pane story-photo scrim">
-          <img
+          <StoryPhoto
             src={photo64Src}
             alt="Four friends laughing around a white table in the middle of a card game"
             width={864}
             height={1152}
-            loading="lazy"
           />
           <p className="story-source">Source: Asmodee × Censuswide, July 2025</p>
           <div className="stat-photo-copy">
@@ -120,31 +148,6 @@ export function ProjectStory() {
           </motion.p>
           <motion.p className="story-body" {...rise(0.08)}>
             The opportunity is to provide visual stimulus, instant emotional interaction, and a lift in the mood at the table.
-          </motion.p>
-        </div>
-      </section>
-
-      <section className="story-block" aria-label="Approach">
-        <div className="inset">
-          <motion.p className="story-label" {...rise()}>
-            Approach
-          </motion.p>
-          <motion.p className="story-body" {...rise(0.05)}>
-            Hardware and software together: layered generation for the visual hit, expression and
-            body for presence. Beginner guidance lives on a smaller, separate robot.
-          </motion.p>
-        </div>
-      </section>
-
-      <section className="story-block story-end" aria-label="Success">
-        <div className="inset">
-          <motion.p className="story-label" {...rise()}>
-            Success
-          </motion.p>
-          <motion.p className="story-body" {...rise(0.05)}>
-            Judge it by behavior: start rate, match completion, and same-table replay, against the
-            table without it. It should feel funnier and more atmospheric — not that the robot was
-            clever.
           </motion.p>
         </div>
       </section>
