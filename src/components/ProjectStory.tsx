@@ -80,8 +80,9 @@ export function ProjectStory() {
       <section className="story-split" aria-label="Trend">
         <div className="story-pane stat-type-pane">
           <p className="stat-num">65%</p>
-          <p className="stat-line">
-            of Pokémon tabletop gym seats sit empty or occupied — even at peak hours.
+          <p className="stat-line stat-two">
+            <span>of Pokémon tabletop gym seats sit empty</span>
+            <span>or occupied — even at peak hours.</span>
           </p>
         </div>
         <div className="story-pane story-copy">
@@ -116,8 +117,9 @@ export function ProjectStory() {
           <p className="story-source">Source: Circana, March 2025</p>
           <div className="stat-photo-copy">
             <p className="stat-num">75%</p>
-            <p className="stat-line">
-              of adult Pokémon card buyers collect or resell — they don’t play.
+            <p className="stat-line stat-two">
+              <span>of adult Pokémon card buyers</span>
+              <span>collect or resell — they don’t play.</span>
             </p>
           </div>
         </figure>
