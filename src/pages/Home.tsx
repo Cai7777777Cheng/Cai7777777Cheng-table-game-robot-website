@@ -435,11 +435,13 @@ export function Home() {
       </section>
 
       <section className="cards" id="cards" aria-label="Details">
+        <article className="card gray" aria-label="Photo to come">
+          <span>Photo to come</span>
+        </article>
         <article
-          className="card gray how-trigger"
-          aria-label="Play Nomo dispensing a card"
+          className="card how"
+          aria-label="Nomo dispensing a card"
           tabIndex={0}
-          role="button"
           onPointerDown={(event) => {
             howPointerRef.current = event.pointerType
             if (event.pointerType === 'touch') howTouchAtRef.current = performance.now()
@@ -468,15 +470,16 @@ export function Home() {
             showHowStill()
           }}
         >
-          <span>Photo to come</span>
-        </article>
-        <article className="card how">
           <video
             ref={howVideoRef}
             src={howClipSrc}
             poster={howPosterSrc}
             muted
             playsInline
+            controls={false}
+            controlsList="nodownload nofullscreen noremoteplayback"
+            disablePictureInPicture
+            disableRemotePlayback
             preload="auto"
             width={1920}
             height={1080}
