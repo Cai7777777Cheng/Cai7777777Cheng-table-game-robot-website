@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 
 const gymSrc = `${import.meta.env.BASE_URL}nomo-gym-25d.jpg`
@@ -33,6 +33,79 @@ function StoryPhoto({
         img.src = `${src}${src.includes('?') ? '&' : '?'}try=${tries.current}`
       }}
     />
+  )
+}
+
+function ChallengeCompare() {
+  const reduce = useReducedMotion()
+  const reduceMotion = reduce === true
+  const runwayRef = useRef<HTMLDivElement>(null)
+  const stageRef = useRef<HTMLElement>(null)
+  const topRef = useRef<HTMLDivElement>(null)
+  const bottomRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (reduceMotion) return
+    const runway = runwayRef.current
+    const stage = stageRef.current
+    const top = topRef.current
+    const bottom = bottomRef.current
+    if (!runway || !stage || !top || !bottom) return
+    let frame = 0
+    const update = () => {
+      frame = 0
+      const max = Math.max(1, runway.offsetHeight - stage.offsetHeight)
+      const progress = Math.min(1, Math.max(0, -runway.getBoundingClientRect().top / max))
+      const shift = Math.min(0, window.innerHeight - stage.offsetHeight)
+      stage.style.top = `${shift * progress}px`
+      top.style.opacity = String(1 - progress)
+      bottom.style.opacity = String(progress)
+    }
+    const onScroll = () => {
+      if (frame) return
+      frame = requestAnimationFrame(update)
+    }
+    update()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    return () => {
+      cancelAnimationFrame(frame)
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+      stage.style.top = ''
+      top.style.opacity = ''
+      bottom.style.opacity = ''
+    }
+  }, [reduceMotion])
+
+  return (
+    <div className="challenge-runway" ref={runwayRef}>
+      <figure className="story-pane story-photo scrim challenge-photo" ref={stageRef}>
+        <StoryPhoto
+          src={photo75Src}
+          alt="Two people inspecting a card binder and a sleeved card, with an unused playmat in the foreground"
+          width={864}
+          height={1152}
+        />
+        <div className="challenge-top" ref={topRef}>
+          <div className="stat-photo-copy">
+            <p className="stat-num">75%</p>
+            <p className="stat-line">
+              of adult Pokémon card buyers collect or resell — they don’t play.
+            </p>
+          </div>
+          <p className="story-source">Source: Circana, March 2025</p>
+        </div>
+        <div className="challenge-bottom" ref={bottomRef}>
+          <div className="stat-photo-copy">
+            <p className="stat-num">65%</p>
+            <p className="stat-line">
+              of Pokémon tabletop gym seats sit empty or occupied — even at peak hours.
+            </p>
+          </div>
+        </div>
+      </figure>
+    </div>
   )
 }
 
@@ -108,21 +181,7 @@ export function ProjectStory() {
             Online games, meanwhile, are more visually appealing.
           </motion.p>
         </div>
-        <figure className="story-pane story-photo scrim">
-          <StoryPhoto
-            src={photo75Src}
-            alt="Two people inspecting a card binder and a sleeved card, with an unused playmat in the foreground"
-            width={864}
-            height={1152}
-          />
-          <p className="story-source">Source: Circana, March 2025</p>
-          <div className="stat-photo-copy">
-            <p className="stat-num">75%</p>
-            <p className="stat-line">
-              of adult Pokémon card buyers collect or resell — they don’t play.
-            </p>
-          </div>
-        </figure>
+        <ChallengeCompare />
       </section>
 
       <section className="story-split" aria-label="Opportunity">
