@@ -468,7 +468,9 @@ a { color: inherit; text-decoration: none; }
 .story-photo {
   position: relative;
   margin: 0;
-  min-height: 110vh;
+  aspect-ratio: 16 / 9;
+  min-height: 0;
+  height: auto;
   background: #f2f2f2;
   overflow: hidden;
   border-radius: 1.6rem;
@@ -477,9 +479,9 @@ a { color: inherit; text-decoration: none; }
   display: block;
   width: 100%;
   height: 100%;
-  min-height: 110vh;
+  min-height: 0;
   object-fit: cover;
-  object-position: center;
+  object-position: center 28%;
 }
 .story-photo.scrim::before {
   content: "";
@@ -525,7 +527,7 @@ a { color: inherit; text-decoration: none; }
   line-height: 1.3;
 }
 .story-photo.photo-64 {
-  aspect-ratio: 2 / 3;
+  aspect-ratio: 16 / 9;
   min-height: 0;
   height: auto;
 }
@@ -533,8 +535,8 @@ a { color: inherit; text-decoration: none; }
   width: 100%;
   height: 100%;
   min-height: 0;
-  object-fit: contain;
-  object-position: center;
+  object-fit: cover;
+  object-position: center 36%;
 }
 
 .bleed { margin: 0; background: #fff; }
@@ -874,7 +876,7 @@ a { color: inherit; text-decoration: none; }
   .stat-type-pane .stat-line { font-size: 1.15rem; }
   .story-photo {
     order: 2;
-    aspect-ratio: 3 / 4;
+    aspect-ratio: 16 / 9;
     min-height: 0;
   }
   .story-photo img { min-height: 0; height: 100%; }
