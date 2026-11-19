@@ -11,6 +11,8 @@ const assembleEnd = `${import.meta.env.BASE_URL}page2-assemble-end.jpg`
 const lightsSrc = `${import.meta.env.BASE_URL}page2-lights-on.jpg`
 const howClipSrc = `${import.meta.env.BASE_URL}how-to-use-nomo-hover.mp4`
 const howPosterSrc = `${import.meta.env.BASE_URL}how-to-use-nomo-hover-poster.jpg`
+const howLeftSrc = `${import.meta.env.BASE_URL}how-to-use-nomo-left.mp4`
+const howLeftPosterSrc = `${import.meta.env.BASE_URL}how-to-use-nomo-left-poster.jpg`
 const repoUrl = 'https://github.com/Cai7777777Cheng/Table-robot-function'
 
 let howSample: HTMLCanvasElement | null = null
@@ -268,6 +270,224 @@ const HowToClip = memo(function HowToClip() {
             return
           }
           showHowStill()
+        }}
+      />
+      <canvas ref={holdRef} className="how-hold" aria-hidden="true" />
+    </article>
+  )
+})
+
+const HowToLeftClip = memo(function HowToLeftClip() {
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const posterRef = useRef<HTMLImageElement>(null)
+  const holdRef = useRef<HTMLCanvasElement>(null)
+  const pointerRef = useRef('mouse')
+  const touchAtRef = useRef(0)
+  const playToken = useRef(0)
+  const hoveringRef = useRef(false)
+  const loopRef = useRef(false)
+  const wrappingRef = useRef(false)
+
+  const lastFrameTime = (video: HTMLVideoElement) =>
+    Number.isFinite(video.duration) ? Math.max(0, video.duration - 1 / 30) : 0
+
+  const paint = (video: HTMLVideoElement) => {
+    const hold = holdRef.current
+    if (!hold || video.readyState < 2 || video.seeking) return false
+    if (hold.width !== 960) {
+      hold.width = 960
+      hold.height = 540
+    }
+    const ctx = hold.getContext('2d', { alpha: false })
+    if (!ctx) return false
+    ctx.drawImage(video, 0, 0, hold.width, hold.height)
+    hold.classList.add('on')
+    return true
+  }
+
+  const showLastFrame = () => {
+    const token = ++playToken.current
+    hoveringRef.current = false
+    loopRef.current = false
+    wrappingRef.current = false
+    posterRef.current?.classList.add('on')
+    const video = videoRef.current
+    if (!video) return
+    video.pause()
+    video.loop = false
+    const place = () => {
+      if (playToken.current !== token) return
+      const end = lastFrameTime(video)
+      if (Math.abs(video.currentTime - end) < 0.04) return
+      try {
+        video.currentTime = end
+      } catch {
+        /* metadata not ready */
+      }
+    }
+    if (video.readyState >= 1) place()
+    else video.addEventListener('loadedmetadata', place, { once: true })
+  }
+
+  const watch = (video: HTMLVideoElement, token: number) => {
+    if (typeof video.requestVideoFrameCallback !== 'function') return
+    video.requestVideoFrameCallback(() => {
+      if (playToken.current !== token) return
+      if (!video.seeking && paint(video)) posterRef.current?.classList.remove('on')
+      const duration = video.duration
+      if (loopRef.current && duration && video.currentTime >= duration - 0.05) {
+        if (!wrappingRef.current) {
+          wrappingRef.current = true
+          try {
+            video.currentTime = 0
+          } catch {
+            wrappingRef.current = false
+          }
+        }
+      } else if (video.currentTime < 0.12) {
+        wrappingRef.current = false
+      }
+      if (video.ended) {
+        if (loopRef.current) {
+          wrappingRef.current = true
+          try {
+            video.currentTime = 0
+          } catch {
+            /* ignore */
+          }
+          video.play()?.catch(() => {})
+        } else {
+          showLastFrame()
+          return
+        }
+      }
+      watch(video, token)
+    })
+  }
+
+  const playHow = (loop: boolean) => {
+    const video = videoRef.current
+    if (!video) return
+    const token = ++playToken.current
+    loopRef.current = loop
+    wrappingRef.current = false
+    video.muted = true
+    video.defaultMuted = true
+    video.playsInline = true
+    video.loop = false
+    const go = () => {
+      if (playToken.current !== token) return
+      const attempt = (retry: boolean) => {
+        if (playToken.current !== token) return
+        const pending = video.play()
+        if (pending && typeof pending.catch === 'function') {
+          pending.catch(() => {
+            if (!retry || playToken.current !== token) return
+            requestAnimationFrame(() => attempt(false))
+          })
+        }
+      }
+      attempt(true)
+      watch(video, token)
+    }
+    const start = () => {
+      if (playToken.current !== token) return
+      if (video.readyState >= 2 && video.currentTime < 0.05 && !video.seeking) go()
+      else {
+        const onSeeked = () => {
+          video.removeEventListener('seeked', onSeeked)
+          go()
+        }
+        video.addEventListener('seeked', onSeeked)
+        try {
+          video.currentTime = 0
+        } catch {
+          go()
+        }
+      }
+    }
+    if (video.readyState >= 1) start()
+    else video.addEventListener('loadedmetadata', start, { once: true })
+  }
+
+  const recentTouch = () => performance.now() - touchAtRef.current < 800
+
+  const beginHover = (pointerType?: string) => {
+    if (pointerType === 'touch') return
+    if (pointerType && pointerType !== 'mouse' && pointerType !== 'pen') return
+    if (recentTouch()) return
+    if (hoveringRef.current) return
+    hoveringRef.current = true
+    playHow(true)
+  }
+
+  const endHover = (pointerType?: string) => {
+    if (pointerType === 'touch') return
+    if (pointerType && pointerType !== 'mouse' && pointerType !== 'pen') return
+    if (recentTouch()) return
+    if (!hoveringRef.current) return
+    showLastFrame()
+  }
+
+  useEffect(() => {
+    showLastFrame()
+  }, [])
+
+  return (
+    <article
+      className="card how how-left"
+      aria-label="Nomo opening a drawer of cards"
+      tabIndex={0}
+      onPointerDown={(event) => {
+        pointerRef.current = event.pointerType
+        if (event.pointerType === 'touch') touchAtRef.current = performance.now()
+      }}
+      onMouseEnter={() => beginHover()}
+      onMouseLeave={() => endHover()}
+      onPointerEnter={(event) => beginHover(event.pointerType)}
+      onPointerLeave={(event) => endHover(event.pointerType)}
+      onClick={() => {
+        if (pointerRef.current !== 'touch') return
+        playHow(false)
+      }}
+      onKeyDown={(event) => {
+        if (event.key !== 'Enter' && event.key !== ' ') return
+        event.preventDefault()
+        playHow(false)
+      }}
+      onBlur={() => {
+        if (hoveringRef.current || loopRef.current) return
+        showLastFrame()
+      }}
+    >
+      <img ref={posterRef} className="how-still on" src={howLeftPosterSrc} alt="" />
+      <video
+        ref={videoRef}
+        src={howLeftSrc}
+        muted
+        playsInline
+        controls={false}
+        controlsList="nodownload nofullscreen noremoteplayback"
+        disablePictureInPicture
+        disableRemotePlayback
+        preload="auto"
+        width={1920}
+        height={1080}
+        aria-hidden="true"
+        onEnded={() => {
+          const video = videoRef.current
+          if (!video) return
+          if (loopRef.current) {
+            wrappingRef.current = true
+            try {
+              video.currentTime = 0
+            } catch {
+              /* ignore */
+            }
+            video.play()?.catch(() => {})
+            return
+          }
+          showLastFrame()
         }}
       />
       <canvas ref={holdRef} className="how-hold" aria-hidden="true" />
@@ -647,9 +867,7 @@ export function Home() {
       </section>
 
       <section className="cards" id="cards" aria-label="Details">
-        <article className="card gray" aria-label="Photo to come">
-          <span>Photo to come</span>
-        </article>
+        <HowToLeftClip />
         <HowToClip />
         <article className="card gray" aria-label="Photo to come">
           <span>Photo to come</span>
