@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 
 const gymSrc = `${import.meta.env.BASE_URL}nomo-gym-25d.jpg`
+const photo65Src = `${import.meta.env.BASE_URL}stat-65-gym.jpg`
 const photo75Src = `${import.meta.env.BASE_URL}stat-75-vending.jpg`
 const photo64Src = `${import.meta.env.BASE_URL}stat-64-together.jpg`
 
@@ -78,13 +79,21 @@ export function ProjectStory() {
       </section>
 
       <section className="story-split" aria-label="Trend">
-        <div className="story-pane stat-type-pane">
-          <p className="stat-num">65%</p>
-          <p className="stat-line stat-two">
-            <span>of Pokémon tabletop gym seats sit empty</span>
-            <span>or occupied — even at peak hours.</span>
-          </p>
-        </div>
+        <figure className="story-pane story-photo photo-65 scrim">
+          <StoryPhoto
+            src={photo65Src}
+            alt="Two players at a card-shop table, with empty orange chairs in the foreground"
+            width={1440}
+            height={2560}
+          />
+          <div className="stat-photo-copy">
+            <p className="stat-num">65%</p>
+            <p className="stat-line stat-two">
+              <span>of Pokémon tabletop gym seats sit empty</span>
+              <span>or occupied — even at peak hours.</span>
+            </p>
+          </div>
+        </figure>
         <div className="story-pane story-copy">
           <motion.p className="story-label" {...rise()}>
             Trend
