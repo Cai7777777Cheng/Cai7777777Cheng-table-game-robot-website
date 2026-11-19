@@ -684,7 +684,9 @@ a { color: inherit; text-decoration: none; }
   padding: 0;
   cursor: pointer;
 }
-.card.how video {
+.card.how .how-still,
+.card.how video,
+.card.how .how-hold {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -694,6 +696,18 @@ a { color: inherit; text-decoration: none; }
   background: #fff;
   pointer-events: none;
 }
+.card.how video {
+  z-index: 1;
+  opacity: 0;
+}
+.card.how video.is-front { opacity: 1; }
+.card.how .how-still,
+.card.how .how-hold {
+  z-index: 2;
+  opacity: 0;
+}
+.card.how .how-still.on,
+.card.how .how-hold.on { opacity: 1; }
 .card.how video::-webkit-media-controls,
 .card.how video::-webkit-media-controls-enclosure,
 .card.how video::-webkit-media-controls-panel,

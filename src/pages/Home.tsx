@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { memo, useEffect, useRef } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { ProjectStory } from '../components/ProjectStory.tsx'
 import { ScreenBreakdown } from '../components/ScreenBreakdown.tsx'
@@ -12,6 +12,305 @@ const lightsSrc = `${import.meta.env.BASE_URL}page2-lights-on.jpg`
 const howClipSrc = `${import.meta.env.BASE_URL}how-to-use-nomo-hover.mp4`
 const howPosterSrc = `${import.meta.env.BASE_URL}how-to-use-nomo-hover-poster.jpg`
 const repoUrl = 'https://github.com/Cai7777777Cheng/Table-robot-function'
+
+let howSample: HTMLCanvasElement | null = null
+
+function howFrameIsBlack(video: HTMLVideoElement) {
+  if (video.readyState < 2 || video.seeking) return true
+  if (!howSample) {
+    howSample = document.createElement('canvas')
+    howSample.width = 32
+    howSample.height = 18
+  }
+  const ctx = howSample.getContext('2d', { willReadFrequently: true })
+  if (!ctx) return false
+  ctx.drawImage(video, 0, 0, howSample.width, howSample.height)
+  const data = ctx.getImageData(0, 0, howSample.width, howSample.height).data
+  let sum = 0
+  for (let i = 0; i < data.length; i += 4) sum += data[i] + data[i + 1] + data[i + 2]
+  return sum / (howSample.width * howSample.height * 3) < 28
+}
+
+// The clip has no black frames. The element paints black while seeking, including a native loop wrap, so a second video is primed at 0 and a canvas keeps the last real frame up until that frame is on screen.
+const HowToClip = memo(function HowToClip() {
+  const videoRefs = [useRef<HTMLVideoElement>(null), useRef<HTMLVideoElement>(null)]
+  const posterRef = useRef<HTMLImageElement>(null)
+  const holdRef = useRef<HTMLCanvasElement>(null)
+  const frontIndex = useRef(0)
+  const pointerRef = useRef('mouse')
+  const touchAtRef = useRef(0)
+  const playToken = useRef(0)
+  const hoveringRef = useRef(false)
+  const loopRef = useRef(false)
+  const wrappingRef = useRef(false)
+
+  const videos = () => videoRefs.map((ref) => ref.current).filter((video): video is HTMLVideoElement => Boolean(video))
+  const frontVideo = () => videoRefs[frontIndex.current]?.current ?? null
+  const backVideo = () => videoRefs[frontIndex.current === 0 ? 1 : 0]?.current ?? null
+
+  const drawHold = (video: HTMLVideoElement) => {
+    const hold = holdRef.current
+    if (!hold || video.readyState < 2 || video.seeking || howFrameIsBlack(video)) return false
+    if (hold.width !== 960) {
+      hold.width = 960
+      hold.height = 540
+    }
+    const ctx = hold.getContext('2d', { alpha: false })
+    if (!ctx) return false
+    ctx.drawImage(video, 0, 0, hold.width, hold.height)
+    hold.dataset.ready = '1'
+    return true
+  }
+
+  const showHold = () => {
+    const hold = holdRef.current
+    if (hold?.dataset.ready) hold.classList.add('on')
+  }
+
+  const hideHold = () => holdRef.current?.classList.remove('on')
+
+  const showPoster = () => posterRef.current?.classList.add('on')
+
+  const hidePoster = () => posterRef.current?.classList.remove('on')
+
+  const parkAtStart = (video: HTMLVideoElement, token: number) => {
+    const park = () => {
+      if (playToken.current !== token) return
+      video.pause()
+      if (video.currentTime < 0.04 && !video.seeking) return
+      try {
+        video.currentTime = 0
+      } catch {
+        /* metadata not ready */
+      }
+    }
+    if (video.readyState >= 1) park()
+    else video.addEventListener('loadedmetadata', park, { once: true })
+  }
+
+  const revealWhenBright = (video: HTMLVideoElement, token: number, attempt: number, commit: () => void) => {
+    const step = () => {
+      if (playToken.current !== token) return
+      if (howFrameIsBlack(video) && attempt < 8) {
+        revealWhenBright(video, token, attempt + 1, commit)
+        return
+      }
+      commit()
+    }
+    if (typeof video.requestVideoFrameCallback === 'function') video.requestVideoFrameCallback(() => step())
+    else requestAnimationFrame(step)
+  }
+
+  const watchPlayback = (video: HTMLVideoElement, token: number) => {
+    if (typeof video.requestVideoFrameCallback !== 'function') return
+    video.requestVideoFrameCallback(() => {
+      if (playToken.current !== token || video !== frontVideo()) return
+      if (!wrappingRef.current) drawHold(video)
+      const nearEnd = Boolean(video.duration) && video.currentTime >= video.duration - 0.08
+      if (nearEnd && loopRef.current) {
+        wrapLoop(video, token)
+        return
+      }
+      if (nearEnd && !loopRef.current) showHold()
+      watchPlayback(video, token)
+    })
+  }
+
+  const wrapLoop = (outgoing: HTMLVideoElement, token: number) => {
+    if (wrappingRef.current || playToken.current !== token || !loopRef.current) return
+    if (outgoing !== frontVideo()) return
+    wrappingRef.current = true
+    drawHold(outgoing)
+    showHold()
+    const incoming = backVideo()
+    if (!incoming) {
+      wrappingRef.current = false
+      return
+    }
+    frontIndex.current = frontIndex.current === 0 ? 1 : 0
+    outgoing.pause()
+    outgoing.classList.remove('is-front')
+    parkAtStart(outgoing, token)
+    incoming.classList.add('is-front')
+    incoming.muted = true
+    incoming.defaultMuted = true
+    incoming.playsInline = true
+    incoming.loop = false
+    const startIncoming = () => {
+      if (playToken.current !== token) return
+      const pending = incoming.play()
+      if (pending && typeof pending.catch === 'function') {
+        pending.catch(() => {
+          if (playToken.current !== token) return
+          requestAnimationFrame(() => {
+            incoming.play()?.catch(() => {})
+          })
+        })
+      }
+      revealWhenBright(incoming, token, 0, () => {
+        if (playToken.current !== token) return
+        hideHold()
+        wrappingRef.current = false
+        watchPlayback(incoming, token)
+      })
+    }
+    if (incoming.readyState >= 2 && incoming.currentTime < 0.05 && !incoming.seeking) startIncoming()
+    else {
+      const onSeeked = () => {
+        incoming.removeEventListener('seeked', onSeeked)
+        startIncoming()
+      }
+      incoming.addEventListener('seeked', onSeeked)
+      try {
+        incoming.currentTime = 0
+      } catch {
+        startIncoming()
+      }
+    }
+  }
+
+  const showHowStill = () => {
+    const token = ++playToken.current
+    hoveringRef.current = false
+    loopRef.current = false
+    wrappingRef.current = false
+    showPoster()
+    hideHold()
+    for (const video of videos()) {
+      video.loop = false
+      video.classList.remove('is-front')
+      parkAtStart(video, token)
+    }
+  }
+
+  const playHow = (loop: boolean) => {
+    const video = frontVideo()
+    if (!video) return
+    const token = ++playToken.current
+    loopRef.current = loop
+    wrappingRef.current = false
+    video.muted = true
+    video.defaultMuted = true
+    video.playsInline = true
+    video.loop = false
+    const start = () => {
+      if (playToken.current !== token) return
+      const go = () => {
+        if (playToken.current !== token) return
+        const attempt = (retry: boolean) => {
+          if (playToken.current !== token) return
+          const pending = video.play()
+          if (pending && typeof pending.catch === 'function') {
+            pending.catch(() => {
+              if (!retry || playToken.current !== token) return
+              requestAnimationFrame(() => attempt(false))
+            })
+          }
+        }
+        video.classList.add('is-front')
+        attempt(true)
+        revealWhenBright(video, token, 0, () => {
+          if (playToken.current !== token) return
+          hidePoster()
+          watchPlayback(video, token)
+        })
+      }
+      if (video.readyState >= 2 && video.currentTime < 0.05 && !video.seeking) go()
+      else {
+        const onSeeked = () => {
+          video.removeEventListener('seeked', onSeeked)
+          go()
+        }
+        video.addEventListener('seeked', onSeeked)
+        try {
+          video.currentTime = 0
+        } catch {
+          go()
+        }
+      }
+    }
+    if (video.readyState >= 1) start()
+    else video.addEventListener('loadedmetadata', start, { once: true })
+  }
+
+  const recentTouch = () => performance.now() - touchAtRef.current < 800
+
+  const beginHowHover = (pointerType?: string) => {
+    if (pointerType === 'touch') return
+    if (pointerType && pointerType !== 'mouse' && pointerType !== 'pen') return
+    if (recentTouch()) return
+    if (hoveringRef.current) return
+    hoveringRef.current = true
+    playHow(true)
+  }
+
+  const endHowHover = (pointerType?: string) => {
+    if (pointerType === 'touch') return
+    if (pointerType && pointerType !== 'mouse' && pointerType !== 'pen') return
+    if (recentTouch()) return
+    if (!hoveringRef.current) return
+    showHowStill()
+  }
+
+  useEffect(() => {
+    showHowStill()
+  }, [])
+
+  return (
+    <article
+      className="card how"
+      aria-label="Nomo dispensing a card"
+      tabIndex={0}
+      onPointerDown={(event) => {
+        pointerRef.current = event.pointerType
+        if (event.pointerType === 'touch') touchAtRef.current = performance.now()
+      }}
+      onMouseEnter={() => beginHowHover()}
+      onMouseLeave={() => endHowHover()}
+      onPointerEnter={(event) => beginHowHover(event.pointerType)}
+      onPointerLeave={(event) => endHowHover(event.pointerType)}
+      onClick={() => {
+        if (pointerRef.current !== 'touch') return
+        playHow(false)
+      }}
+      onKeyDown={(event) => {
+        if (event.key !== 'Enter' && event.key !== ' ') return
+        event.preventDefault()
+        playHow(false)
+      }}
+      onBlur={() => {
+        if (hoveringRef.current || loopRef.current) return
+        showHowStill()
+      }}
+    >
+      <img ref={posterRef} className="how-still on" src={howPosterSrc} alt="" />
+      {([0, 1] as const).map((index) => (
+        <video
+          key={index}
+          ref={videoRefs[index]}
+          src={howClipSrc}
+          muted
+          playsInline
+          controls={false}
+          controlsList="nodownload nofullscreen noremoteplayback"
+          disablePictureInPicture
+          disableRemotePlayback
+          preload="auto"
+          width={1920}
+          height={1080}
+          aria-hidden="true"
+          onEnded={(event) => {
+            const video = event.currentTarget
+            if (video !== frontVideo()) return
+            if (loopRef.current) wrapLoop(video, playToken.current)
+            else showHowStill()
+          }}
+        />
+      ))}
+      <canvas ref={holdRef} className="how-hold" aria-hidden="true" />
+    </article>
+  )
+})
 
 const features = [
   {
@@ -36,103 +335,6 @@ export function Home() {
   const page2Ref = useRef<HTMLElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
   const lightsRef = useRef<HTMLImageElement>(null)
-  const howVideoRef = useRef<HTMLVideoElement>(null)
-  const howPointerRef = useRef<string>('mouse')
-  const howTouchAtRef = useRef(0)
-  const howPlayToken = useRef(0)
-  const howHovering = useRef(false)
-
-  const showHowStill = () => {
-    const video = howVideoRef.current
-    if (!video) return
-    const token = ++howPlayToken.current
-    howHovering.current = false
-    video.loop = false
-    video.pause()
-    const place = () => {
-      if (howPlayToken.current !== token) return
-      if (Math.abs(video.currentTime - 1) > 0.05) {
-        try {
-          video.currentTime = 1
-        } catch {
-          /* metadata not ready yet */
-        }
-      }
-    }
-    if (video.readyState >= 1) place()
-    else video.addEventListener('loadedmetadata', place, { once: true })
-  }
-
-  const playHow = (loop: boolean) => {
-    const video = howVideoRef.current
-    if (!video) return
-    const token = ++howPlayToken.current
-    video.muted = true
-    video.defaultMuted = true
-    video.playsInline = true
-    video.loop = loop
-
-    const startPlayback = () => {
-      if (howPlayToken.current !== token) return
-      const attempt = (retry: boolean) => {
-        if (howPlayToken.current !== token) return
-        const pending = video.play()
-        if (pending && typeof pending.catch === 'function') {
-          pending.catch(() => {
-            if (!retry || howPlayToken.current !== token) return
-            requestAnimationFrame(() => attempt(false))
-          })
-        }
-      }
-      attempt(true)
-    }
-
-    const seekAndPlay = () => {
-      if (howPlayToken.current !== token) return
-      if (video.currentTime === 0) {
-        startPlayback()
-        return
-      }
-      const onSeeked = () => {
-        video.removeEventListener('seeked', onSeeked)
-        startPlayback()
-      }
-      video.addEventListener('seeked', onSeeked)
-      try {
-        video.currentTime = 0
-      } catch {
-        video.removeEventListener('seeked', onSeeked)
-        startPlayback()
-      }
-    }
-
-    if (video.readyState >= 1) seekAndPlay()
-    else video.addEventListener('loadedmetadata', seekAndPlay, { once: true })
-  }
-
-  const recentTouch = () => performance.now() - howTouchAtRef.current < 800
-
-  const beginHowHover = (pointerType?: string) => {
-    if (pointerType === 'touch') return
-    if (pointerType && pointerType !== 'mouse' && pointerType !== 'pen') return
-    if (recentTouch()) return
-    if (howHovering.current) return
-    howHovering.current = true
-    playHow(true)
-  }
-
-  const endHowHover = (pointerType?: string) => {
-    if (pointerType === 'touch') return
-    if (pointerType && pointerType !== 'mouse' && pointerType !== 'pen') return
-    if (recentTouch()) return
-    if (!howHovering.current) return
-    showHowStill()
-  }
-
-  useEffect(() => {
-    showHowStill()
-  }, [])
-
   useEffect(() => {
     const section = page2Ref.current
     const video = videoRef.current
@@ -490,51 +692,7 @@ export function Home() {
         <article className="card gray" aria-label="Photo to come">
           <span>Photo to come</span>
         </article>
-        <article
-          className="card how"
-          aria-label="Nomo dispensing a card"
-          tabIndex={0}
-          onPointerDown={(event) => {
-            howPointerRef.current = event.pointerType
-            if (event.pointerType === 'touch') howTouchAtRef.current = performance.now()
-          }}
-          onMouseEnter={() => beginHowHover()}
-          onMouseLeave={() => endHowHover()}
-          onPointerEnter={(event) => beginHowHover(event.pointerType)}
-          onPointerLeave={(event) => endHowHover(event.pointerType)}
-          onClick={() => {
-            if (howPointerRef.current !== 'touch') return
-            playHow(false)
-          }}
-          onKeyDown={(event) => {
-            if (event.key !== 'Enter' && event.key !== ' ') return
-            event.preventDefault()
-            playHow(false)
-          }}
-          onBlur={() => {
-            if (howHovering.current) return
-            const video = howVideoRef.current
-            if (video?.loop) return
-            showHowStill()
-          }}
-        >
-          <video
-            ref={howVideoRef}
-            src={howClipSrc}
-            poster={howPosterSrc}
-            muted
-            playsInline
-            controls={false}
-            controlsList="nodownload nofullscreen noremoteplayback"
-            disablePictureInPicture
-            disableRemotePlayback
-            preload="auto"
-            width={1920}
-            height={1080}
-            aria-label="Nomo dispensing a card"
-            onEnded={() => showHowStill()}
-          />
-        </article>
+        <HowToClip />
         <article className="card gray" aria-label="Photo to come">
           <span>Photo to come</span>
         </article>
