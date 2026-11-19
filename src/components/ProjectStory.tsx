@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 
 const gymSrc = `${import.meta.env.BASE_URL}nomo-gym-25d.jpg`
-const photo75Src = `${import.meta.env.BASE_URL}stat-75-collect.jpg`
+const photo75Src = `${import.meta.env.BASE_URL}stat-75-vending.jpg`
 const photo64Src = `${import.meta.env.BASE_URL}stat-64-together.jpg`
 
 const ease = [0.22, 1, 0.36, 1] as const
@@ -109,9 +109,9 @@ export function ProjectStory() {
         <figure className="story-pane story-photo scrim">
           <StoryPhoto
             src={photo75Src}
-            alt="Two people inspecting a card binder and a sleeved card, with an unused playmat in the foreground"
-            width={864}
-            height={1152}
+            alt="A man smiling at a Pokémon card in front of a Pokémon vending machine"
+            width={1440}
+            height={2560}
           />
           <p className="story-source">Source: Circana, March 2025</p>
           <div className="stat-photo-copy">
