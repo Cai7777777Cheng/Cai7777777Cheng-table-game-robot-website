@@ -285,8 +285,8 @@ const features = [
     body: 'It answers the state of the game with motion and expression, and projects visuals that deepen immersion.',
   },
   {
-    title: 'Eyes',
-    body: 'Two slanted lights. When the table is quiet, it’s just an object sitting there.',
+    title: 'Companion UX',
+    body: 'Nomo and its companion robots guide new players, and offer encouragement or comfort when the game is won or lost.',
   },
 ] as const
 
