@@ -9,6 +9,8 @@ const assembleSrc = `${import.meta.env.BASE_URL}page2-assemble.mp4`
 const assemblePoster = `${import.meta.env.BASE_URL}page2-assemble-poster.jpg`
 const assembleEnd = `${import.meta.env.BASE_URL}page2-assemble-end.jpg`
 const lightsSrc = `${import.meta.env.BASE_URL}page2-lights-on.jpg`
+const howClipSrc = `${import.meta.env.BASE_URL}how-to-use-nomo-hover.mp4`
+const howPosterSrc = `${import.meta.env.BASE_URL}how-to-use-nomo-hover-poster.jpg`
 const repoUrl = 'https://github.com/Cai7777777Cheng/Table-robot-function'
 
 const features = [
@@ -34,6 +36,50 @@ export function Home() {
   const page2Ref = useRef<HTMLElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
   const lightsRef = useRef<HTMLImageElement>(null)
+  const howVideoRef = useRef<HTMLVideoElement>(null)
+  const howPointerRef = useRef<string>('mouse')
+  const howTouchAtRef = useRef(0)
+
+  const fineHover = () => window.matchMedia('(hover: hover) and (pointer: fine)').matches
+
+  const showHowStill = () => {
+    const video = howVideoRef.current
+    if (!video) return
+    video.loop = false
+    video.pause()
+    const place = () => {
+      if (Math.abs(video.currentTime - 1) > 0.05) {
+        try {
+          video.currentTime = 1
+        } catch {
+          /* metadata not ready yet */
+        }
+      }
+    }
+    if (video.readyState >= 1) place()
+    else video.addEventListener('loadedmetadata', place, { once: true })
+  }
+
+  const playHow = (loop: boolean) => {
+    const video = howVideoRef.current
+    if (!video || reduceMotion) return
+    video.loop = loop
+    const start = () => {
+      try {
+        video.currentTime = 0
+      } catch {
+        /* ignore */
+      }
+      const pending = video.play()
+      if (pending && typeof pending.catch === 'function') pending.catch(() => showHowStill())
+    }
+    if (video.readyState >= 1) start()
+    else video.addEventListener('loadedmetadata', start, { once: true })
+  }
+
+  useEffect(() => {
+    showHowStill()
+  }, [])
 
   useEffect(() => {
     const section = page2Ref.current
@@ -389,11 +435,54 @@ export function Home() {
       </section>
 
       <section className="cards" id="cards" aria-label="Details">
-        <article className="card gray" aria-label="Photo to come">
+        <article
+          className="card gray how-trigger"
+          aria-label="Play Nomo dispensing a card"
+          tabIndex={0}
+          role="button"
+          onPointerDown={(event) => {
+            howPointerRef.current = event.pointerType
+            if (event.pointerType === 'touch') howTouchAtRef.current = performance.now()
+          }}
+          onPointerEnter={(event) => {
+            if (event.pointerType === 'touch' || !fineHover()) return
+            if (performance.now() - howTouchAtRef.current < 800) return
+            playHow(true)
+          }}
+          onPointerLeave={(event) => {
+            if (event.pointerType === 'touch' || !fineHover()) return
+            showHowStill()
+          }}
+          onClick={() => {
+            if (howPointerRef.current !== 'touch' && fineHover()) return
+            playHow(false)
+          }}
+          onKeyDown={(event) => {
+            if (event.key !== 'Enter' && event.key !== ' ') return
+            event.preventDefault()
+            playHow(false)
+          }}
+          onBlur={() => {
+            const video = howVideoRef.current
+            if (video?.loop && fineHover()) return
+            showHowStill()
+          }}
+        >
           <span>Photo to come</span>
         </article>
-        <article className="card gray" aria-label="Photo to come">
-          <span>Photo to come</span>
+        <article className="card how">
+          <video
+            ref={howVideoRef}
+            src={howClipSrc}
+            poster={howPosterSrc}
+            muted
+            playsInline
+            preload="auto"
+            width={1920}
+            height={1080}
+            aria-label="Nomo dispensing a card"
+            onEnded={() => showHowStill()}
+          />
         </article>
         <article className="card gray" aria-label="Photo to come">
           <span>Photo to come</span>
