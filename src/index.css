@@ -674,6 +674,22 @@ a { color: inherit; text-decoration: none; }
   color: #8d8d8d;
   font-size: 0.95rem;
 }
+.card.how-trigger {
+  cursor: pointer;
+}
+.card.how {
+  background: #fff;
+  padding: 0;
+}
+.card.how video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  background: #fff;
+}
 .card.link {
   justify-content: space-between;
   color: #111;
