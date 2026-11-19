@@ -383,7 +383,7 @@ export function Home() {
 
       <section className="band" id="craft">
         <motion.div className="center narrow" {...rise()}>
-          <h2>More details to see.</h2>
+          <h2>How to use NOMO</h2>
           <p>The screens, the eyes, and the body were made to heighten the mood at the table.</p>
         </motion.div>
       </section>
