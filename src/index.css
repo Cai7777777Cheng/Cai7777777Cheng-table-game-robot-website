@@ -444,11 +444,16 @@ a { color: inherit; text-decoration: none; }
 }
 .stat-type-pane {
   position: relative;
+  align-self: start;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  min-height: 110vh;
+  width: 100%;
+  aspect-ratio: 9 / 13;
+  height: auto;
+  max-height: none;
+  min-height: auto;
   padding: 3.4rem 3.1rem 5.5rem;
   background: #f0f0f0;
   border-radius: 1.6rem;
@@ -480,7 +485,7 @@ a { color: inherit; text-decoration: none; }
   align-self: start;
   width: 100%;
   margin: 0;
-  aspect-ratio: 9 / 16;
+  aspect-ratio: 9 / 13;
   height: auto;
   max-height: none;
   min-height: auto;
@@ -495,7 +500,7 @@ a { color: inherit; text-decoration: none; }
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 15% center;
+  object-position: 15% top;
 }
 .story-photo.scrim::before {
   content: "";
@@ -546,7 +551,7 @@ a { color: inherit; text-decoration: none; }
 .story-photo.photo-64 {
   align-self: start;
   width: 100%;
-  aspect-ratio: 9 / 16;
+  aspect-ratio: 9 / 13;
   height: auto;
   max-height: none;
   min-height: auto;
@@ -557,7 +562,7 @@ a { color: inherit; text-decoration: none; }
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center center;
+  object-position: center bottom;
 }
 
 .bleed { margin: 0; background: #fff; }
@@ -895,8 +900,13 @@ a { color: inherit; text-decoration: none; }
   }
   .stat-type-pane {
     order: 1;
+    align-self: start;
+    width: 100%;
+    aspect-ratio: 9 / 13;
+    height: auto;
+    max-height: none;
+    min-height: auto;
     padding: 2.4rem 1.5rem 3.4rem;
-    min-height: 0;
   }
   .stat-type-pane .stat-num { font-size: clamp(3.4rem, 18vw, 5.8rem); }
   .stat-type-pane .stat-line { font-size: 1.15rem; }
@@ -906,7 +916,7 @@ a { color: inherit; text-decoration: none; }
     order: 2;
     align-self: start;
     width: 100%;
-    aspect-ratio: 9 / 16;
+    aspect-ratio: 9 / 13;
     height: auto;
     max-height: none;
     min-height: auto;
