@@ -571,7 +571,7 @@ a { color: inherit; text-decoration: none; }
   object-position: center bottom;
 }
 .story-photo.photo-65 img {
-  object-position: center bottom;
+  object-position: center;
 }
 
 .bleed { margin: 0; background: #fff; }
