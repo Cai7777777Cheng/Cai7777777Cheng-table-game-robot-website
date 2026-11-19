@@ -281,8 +281,8 @@ const features = [
     body: 'It reads the mood at the table and answers in real time with motion, light, and sound.',
   },
   {
-    title: 'At the table',
-    body: 'The cards stay in your hands. It doesn’t play for you. It only lights the round.',
+    title: 'In the game',
+    body: 'It answers the state of the game with motion and expression, and projects visuals that deepen immersion.',
   },
   {
     title: 'Eyes',
