@@ -89,8 +89,7 @@ export function ProjectStory() {
             Trend
           </motion.p>
           <motion.p className="story-body" {...rise(0.06)}>
-            Interest arrives quickly, and fades just as fast. Buying the cards is not the same as
-            playing. Arriving at the venue is not the same as starting a match.
+            Tabletop games bind friends and help like-minded players meet, but how many people take part — and how often — is not encouraging.
           </motion.p>
         </div>
       </section>
