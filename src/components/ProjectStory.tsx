@@ -126,12 +126,12 @@ export function ProjectStory() {
       </section>
 
       <section className="story-split" aria-label="Opportunity">
-        <figure className="story-pane story-photo scrim">
+        <figure className="story-pane story-photo photo-64 scrim">
           <StoryPhoto
             src={photo64Src}
-            alt="Four friends laughing around a white table in the middle of a card game"
-            width={864}
-            height={1152}
+            alt="Four friends playing UNO around a wooden table in a warm evening living room"
+            width={683}
+            height={1024}
           />
           <p className="story-source">Source: Asmodee × Censuswide, July 2025</p>
           <div className="stat-photo-copy">
