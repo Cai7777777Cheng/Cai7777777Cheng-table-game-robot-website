@@ -569,12 +569,14 @@ a { color: inherit; text-decoration: none; }
 }
 .table-band h2 {
   margin: 0 auto 3.5rem;
-  width: min(100% - 2rem, 40rem);
+  width: max-content;
+  max-width: calc(100% - 2rem);
   text-align: center;
   font-size: clamp(2.6rem, 5vw, 4.2rem);
   font-weight: 500;
   letter-spacing: -0.045em;
   line-height: 1.08;
+  white-space: nowrap;
 }
 .table-list {
   list-style: none;
@@ -894,7 +896,11 @@ a { color: inherit; text-decoration: none; }
   .center p { font-size: 0.95rem; }
   .cards, .footer { grid-template-columns: 1fr; display: grid; }
   .table-band { padding: 4.5rem 0 3rem; }
-  .table-band h2 { margin-bottom: 1.5rem; font-size: 2.4rem; }
+  .table-band h2 {
+    margin-bottom: 1.5rem;
+    font-size: clamp(1.35rem, 6.4vw, 2.4rem);
+    white-space: nowrap;
+  }
   .table-list { width: min(100% - 1.5rem, 68rem); }
   .table-list li {
     min-height: 0;

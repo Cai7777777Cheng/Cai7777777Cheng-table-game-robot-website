@@ -623,11 +623,7 @@ export function Home() {
       </section>
 
       <section className="table-band" id="features" aria-label="Table">
-        <motion.h2 {...rise()}>
-          A ring of light.
-          <br />
-          The whole table can see.
-        </motion.h2>
+        <motion.h2 {...rise()}>The whole table can enjoy.</motion.h2>
         <ol className="table-list">
           {features.map((item, index) => (
             <li key={item.title} className={index % 2 === 0 ? 'side-right' : 'side-left'}>
