@@ -648,6 +648,7 @@ a { color: inherit; text-decoration: none; }
 .cards {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
   gap: 2rem;
   width: min(100% - 2rem, 2240px);
   margin: 0 auto 2rem;
@@ -656,9 +657,13 @@ a { color: inherit; text-decoration: none; }
 .card {
   position: relative;
   overflow: hidden;
-  min-height: 37rem;
   border-radius: 14px;
   background: #ececec;
+}
+#cards .card {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  min-height: 0;
 }
 .card img {
   width: 100%;
@@ -684,7 +689,7 @@ a { color: inherit; text-decoration: none; }
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
   background: #fff;
   pointer-events: none;
@@ -899,7 +904,6 @@ a { color: inherit; text-decoration: none; }
   }
   .side-left .table-frame { transform: rotate(-4deg); }
   .cards { width: calc(100% - 1.5rem); }
-  .card { min-height: 28rem; }
   .bleed img, .closeup img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: contain; }
   .lab { width: calc(100% - 1.2rem); }
   .lab iframe { height: 70vh; }
