@@ -39,15 +39,18 @@ export function Home() {
   const howVideoRef = useRef<HTMLVideoElement>(null)
   const howPointerRef = useRef<string>('mouse')
   const howTouchAtRef = useRef(0)
-
-  const fineHover = () => window.matchMedia('(hover: hover) and (pointer: fine)').matches
+  const howPlayToken = useRef(0)
+  const howHovering = useRef(false)
 
   const showHowStill = () => {
     const video = howVideoRef.current
     if (!video) return
+    const token = ++howPlayToken.current
+    howHovering.current = false
     video.loop = false
     video.pause()
     const place = () => {
+      if (howPlayToken.current !== token) return
       if (Math.abs(video.currentTime - 1) > 0.05) {
         try {
           video.currentTime = 1
@@ -62,19 +65,68 @@ export function Home() {
 
   const playHow = (loop: boolean) => {
     const video = howVideoRef.current
-    if (!video || reduceMotion) return
+    if (!video) return
+    const token = ++howPlayToken.current
+    video.muted = true
+    video.defaultMuted = true
+    video.playsInline = true
     video.loop = loop
-    const start = () => {
+
+    const startPlayback = () => {
+      if (howPlayToken.current !== token) return
+      const attempt = (retry: boolean) => {
+        if (howPlayToken.current !== token) return
+        const pending = video.play()
+        if (pending && typeof pending.catch === 'function') {
+          pending.catch(() => {
+            if (!retry || howPlayToken.current !== token) return
+            requestAnimationFrame(() => attempt(false))
+          })
+        }
+      }
+      attempt(true)
+    }
+
+    const seekAndPlay = () => {
+      if (howPlayToken.current !== token) return
+      if (video.currentTime === 0) {
+        startPlayback()
+        return
+      }
+      const onSeeked = () => {
+        video.removeEventListener('seeked', onSeeked)
+        startPlayback()
+      }
+      video.addEventListener('seeked', onSeeked)
       try {
         video.currentTime = 0
       } catch {
-        /* ignore */
+        video.removeEventListener('seeked', onSeeked)
+        startPlayback()
       }
-      const pending = video.play()
-      if (pending && typeof pending.catch === 'function') pending.catch(() => showHowStill())
     }
-    if (video.readyState >= 1) start()
-    else video.addEventListener('loadedmetadata', start, { once: true })
+
+    if (video.readyState >= 1) seekAndPlay()
+    else video.addEventListener('loadedmetadata', seekAndPlay, { once: true })
+  }
+
+  const recentTouch = () => performance.now() - howTouchAtRef.current < 800
+
+  const beginHowHover = (pointerType?: string) => {
+    if (pointerType === 'touch') return
+    if (pointerType && pointerType !== 'mouse' && pointerType !== 'pen') return
+    if (recentTouch()) return
+    if (howHovering.current) return
+    howHovering.current = true
+    playHow(true)
+  }
+
+  const endHowHover = (pointerType?: string) => {
+    if (pointerType === 'touch') return
+    if (pointerType && pointerType !== 'mouse' && pointerType !== 'pen') return
+    if (recentTouch()) return
+    if (!howHovering.current) return
+    showHowStill()
   }
 
   useEffect(() => {
@@ -446,17 +498,12 @@ export function Home() {
             howPointerRef.current = event.pointerType
             if (event.pointerType === 'touch') howTouchAtRef.current = performance.now()
           }}
-          onPointerEnter={(event) => {
-            if (event.pointerType === 'touch' || !fineHover()) return
-            if (performance.now() - howTouchAtRef.current < 800) return
-            playHow(true)
-          }}
-          onPointerLeave={(event) => {
-            if (event.pointerType === 'touch' || !fineHover()) return
-            showHowStill()
-          }}
+          onMouseEnter={() => beginHowHover()}
+          onMouseLeave={() => endHowHover()}
+          onPointerEnter={(event) => beginHowHover(event.pointerType)}
+          onPointerLeave={(event) => endHowHover(event.pointerType)}
           onClick={() => {
-            if (howPointerRef.current !== 'touch' && fineHover()) return
+            if (howPointerRef.current !== 'touch') return
             playHow(false)
           }}
           onKeyDown={(event) => {
@@ -465,8 +512,9 @@ export function Home() {
             playHow(false)
           }}
           onBlur={() => {
+            if (howHovering.current) return
             const video = howVideoRef.current
-            if (video?.loop && fineHover()) return
+            if (video?.loop) return
             showHowStill()
           }}
         >
