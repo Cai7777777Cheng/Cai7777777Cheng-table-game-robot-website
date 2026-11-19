@@ -669,6 +669,10 @@ a { color: inherit; text-decoration: none; }
   aspect-ratio: 4 / 3;
   min-height: 0;
 }
+#cards .card.how-left {
+  aspect-ratio: 16 / 9;
+  min-height: 0;
+}
 .card img {
   width: 100%;
   height: 100%;
