@@ -465,18 +465,6 @@ a { color: inherit; text-decoration: none; }
   font-weight: 400;
   line-height: 1.35;
 }
-.stat-source {
-  position: absolute;
-  left: 3.1rem;
-  right: 3.1rem;
-  bottom: 1.4rem;
-  margin: 0;
-  color: #9a9a9a;
-  font-size: 0.7rem;
-  font-weight: 400;
-  letter-spacing: 0.01em;
-  line-height: 1.4;
-}
 .story-photo {
   position: relative;
   margin: 0;
@@ -547,64 +535,6 @@ a { color: inherit; text-decoration: none; }
   min-height: 0;
   object-fit: contain;
   object-position: center;
-}
-.challenge-runway {
-  position: relative;
-  min-width: 0;
-}
-.challenge-runway::after {
-  content: "";
-  display: block;
-  height: 72vh;
-}
-.challenge-photo {
-  position: sticky;
-  top: 0;
-}
-.story-photo.challenge-photo.scrim::before {
-  background:
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.1) 30%, rgba(0, 0, 0, 0) 48%),
-    radial-gradient(ellipse 78% 46% at 14% 100%, rgba(0, 0, 0, 0.58) 0%, rgba(0, 0, 0, 0.2) 48%, rgba(0, 0, 0, 0) 74%),
-    linear-gradient(to top, rgba(0, 0, 0, 0.34) 0%, rgba(0, 0, 0, 0) 36%);
-}
-.challenge-top,
-.challenge-bottom {
-  position: absolute;
-  z-index: 2;
-  left: 0.7rem;
-  right: 0.7rem;
-  pointer-events: none;
-}
-.challenge-top {
-  top: 0.7rem;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
-}
-.challenge-bottom {
-  bottom: 0.7rem;
-  opacity: 0;
-}
-.challenge-photo .stat-photo-copy {
-  position: relative;
-  left: auto;
-  right: auto;
-  bottom: auto;
-  max-width: min(22rem, 70%);
-}
-.challenge-photo .story-source {
-  position: relative;
-  top: auto;
-  right: auto;
-  flex: 0 0 auto;
-  max-width: 11rem;
-  margin-top: 0.35rem;
-}
-@media (prefers-reduced-motion: reduce) {
-  .challenge-runway::after { height: 0; }
-  .challenge-top,
-  .challenge-bottom { opacity: 1; }
 }
 
 .bleed { margin: 0; background: #fff; }
@@ -947,7 +877,6 @@ a { color: inherit; text-decoration: none; }
     aspect-ratio: 3 / 4;
     min-height: 0;
   }
-  .challenge-runway { order: 2; }
   .story-photo img { min-height: 0; height: 100%; }
   .story-photo .stat-photo-copy { left: 1.15rem; bottom: 0.9rem; max-width: calc(100% - 2.3rem); }
   .story-photo .stat-num { font-size: clamp(2.35rem, 11vw, 3.6rem); }
