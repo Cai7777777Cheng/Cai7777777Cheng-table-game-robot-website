@@ -465,6 +465,16 @@ a { color: inherit; text-decoration: none; }
   font-weight: 400;
   line-height: 1.35;
 }
+.stat-line.stat-two {
+  max-width: none;
+}
+.stat-line.stat-two span {
+  display: block;
+  white-space: nowrap;
+}
+.story-photo .stat-photo-copy:has(.stat-two) {
+  max-width: none;
+}
 .story-photo {
   position: relative;
   align-self: start;
@@ -529,6 +539,9 @@ a { color: inherit; text-decoration: none; }
   font-size: clamp(1.05rem, 1.55vw, 1.35rem);
   font-weight: 500;
   line-height: 1.3;
+}
+.story-photo .stat-line.stat-two {
+  max-width: none;
 }
 .story-photo.photo-64 {
   align-self: start;
@@ -887,6 +900,7 @@ a { color: inherit; text-decoration: none; }
   }
   .stat-type-pane .stat-num { font-size: clamp(3.4rem, 18vw, 5.8rem); }
   .stat-type-pane .stat-line { font-size: 1.15rem; }
+  .stat-type-pane .stat-line.stat-two { font-size: clamp(0.92rem, 3.5vw, 1.05rem); }
   .story-photo,
   .story-photo.photo-64 {
     order: 2;
@@ -908,6 +922,7 @@ a { color: inherit; text-decoration: none; }
   .story-photo .stat-photo-copy { left: 1.15rem; bottom: 0.9rem; max-width: calc(100% - 2.3rem); }
   .story-photo .stat-num { font-size: clamp(2.35rem, 11vw, 3.6rem); }
   .story-photo .stat-line { max-width: none; font-size: 0.95rem; }
+  .story-photo .stat-line.stat-two { font-size: clamp(0.82rem, 3.2vw, 0.95rem); }
   .hero { padding-top: 3.6rem; }
   .hero-frame { width: 100%; aspect-ratio: 16 / 9; }
   .hero-photo { width: 100%; height: 100%; object-fit: contain; }
