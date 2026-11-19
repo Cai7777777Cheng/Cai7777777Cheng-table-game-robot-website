@@ -15,28 +15,56 @@ const repoUrl = 'https://github.com/Cai7777777Cheng/Table-robot-function'
 
 let howSample: HTMLCanvasElement | null = null
 
-function howFrameIsBlack(video: HTMLVideoElement) {
+function howFrameIsBad(video: HTMLVideoElement) {
   if (video.readyState < 2 || video.seeking) return true
   if (!howSample) {
     howSample = document.createElement('canvas')
-    howSample.width = 32
-    howSample.height = 18
+    howSample.width = 80
+    howSample.height = 60
   }
   const ctx = howSample.getContext('2d', { willReadFrequently: true })
   if (!ctx) return false
-  ctx.drawImage(video, 0, 0, howSample.width, howSample.height)
-  const data = ctx.getImageData(0, 0, howSample.width, howSample.height).data
+  const srcW = video.videoWidth || 1920
+  const srcH = video.videoHeight || 1080
+  const cropW = Math.round(srcW * 0.75)
+  const cropX = Math.round((srcW - cropW) / 2)
+  ctx.drawImage(video, cropX, 0, cropW, srcH, 0, 0, 80, 60)
+  const { data } = ctx.getImageData(0, 0, 80, 60)
+  const luma = (x: number, y: number) => {
+    const i = (y * 80 + x) * 4
+    return (data[i] + data[i + 1] + data[i + 2]) / 3
+  }
   let sum = 0
-  for (let i = 0; i < data.length; i += 4) sum += data[i] + data[i + 1] + data[i + 2]
-  return sum / (howSample.width * howSample.height * 3) < 28
+  for (let y = 0; y < 60; y++) for (let x = 0; x < 80; x++) sum += luma(x, y)
+  if (sum / (80 * 60) < 160) return true
+  const flatGray = (x0: number, y0: number) => {
+    let s = 0
+    let s2 = 0
+    const n = 16 * 12
+    for (let y = y0; y < y0 + 12; y++) {
+      for (let x = x0; x < x0 + 16; x++) {
+        const v = luma(x, y)
+        s += v
+        s2 += v * v
+      }
+    }
+    const mean = s / n
+    const variance = s2 / n - mean * mean
+    return variance < 20 && mean > 140 && mean < 210
+  }
+  for (let y = 0; y <= 48; y += 12) {
+    for (let x = 0; x <= 64; x += 16) {
+      if (flatGray(x, y)) return true
+    }
+  }
+  return false
 }
 
-// The clip has no black frames. The element paints black while seeking, including a native loop wrap, so a second video is primed at 0 and a canvas keeps the last real frame up until that frame is on screen.
+// The video element stays invisible. Playback is copied onto the canvas, and a flat gray tile (baked into one source frame) is left out so the previous frame stays up.
 const HowToClip = memo(function HowToClip() {
-  const videoRefs = [useRef<HTMLVideoElement>(null), useRef<HTMLVideoElement>(null)]
+  const videoRef = useRef<HTMLVideoElement>(null)
   const posterRef = useRef<HTMLImageElement>(null)
   const holdRef = useRef<HTMLCanvasElement>(null)
-  const frontIndex = useRef(0)
   const pointerRef = useRef('mouse')
   const touchAtRef = useRef(0)
   const playToken = useRef(0)
@@ -44,13 +72,9 @@ const HowToClip = memo(function HowToClip() {
   const loopRef = useRef(false)
   const wrappingRef = useRef(false)
 
-  const videos = () => videoRefs.map((ref) => ref.current).filter((video): video is HTMLVideoElement => Boolean(video))
-  const frontVideo = () => videoRefs[frontIndex.current]?.current ?? null
-  const backVideo = () => videoRefs[frontIndex.current === 0 ? 1 : 0]?.current ?? null
-
-  const drawHold = (video: HTMLVideoElement) => {
+  const paint = (video: HTMLVideoElement) => {
     const hold = holdRef.current
-    if (!hold || video.readyState < 2 || video.seeking || howFrameIsBlack(video)) return false
+    if (!hold || howFrameIsBad(video)) return false
     if (hold.width !== 960) {
       hold.width = 960
       hold.height = 540
@@ -58,25 +82,22 @@ const HowToClip = memo(function HowToClip() {
     const ctx = hold.getContext('2d', { alpha: false })
     if (!ctx) return false
     ctx.drawImage(video, 0, 0, hold.width, hold.height)
-    hold.dataset.ready = '1'
+    hold.classList.add('on')
     return true
   }
 
-  const showHold = () => {
-    const hold = holdRef.current
-    if (hold?.dataset.ready) hold.classList.add('on')
-  }
-
-  const hideHold = () => holdRef.current?.classList.remove('on')
-
-  const showPoster = () => posterRef.current?.classList.add('on')
-
-  const hidePoster = () => posterRef.current?.classList.remove('on')
-
-  const parkAtStart = (video: HTMLVideoElement, token: number) => {
+  const showHowStill = () => {
+    const token = ++playToken.current
+    hoveringRef.current = false
+    loopRef.current = false
+    wrappingRef.current = false
+    posterRef.current?.classList.add('on')
+    const video = videoRef.current
+    if (!video) return
+    video.pause()
+    video.loop = false
     const park = () => {
       if (playToken.current !== token) return
-      video.pause()
       if (video.currentTime < 0.04 && !video.seeking) return
       try {
         video.currentTime = 0
@@ -88,103 +109,44 @@ const HowToClip = memo(function HowToClip() {
     else video.addEventListener('loadedmetadata', park, { once: true })
   }
 
-  const revealWhenBright = (video: HTMLVideoElement, token: number, attempt: number, commit: () => void) => {
-    const step = () => {
-      if (playToken.current !== token) return
-      if (howFrameIsBlack(video) && attempt < 8) {
-        revealWhenBright(video, token, attempt + 1, commit)
-        return
-      }
-      commit()
-    }
-    if (typeof video.requestVideoFrameCallback === 'function') video.requestVideoFrameCallback(() => step())
-    else requestAnimationFrame(step)
-  }
-
-  const watchPlayback = (video: HTMLVideoElement, token: number) => {
+  const watch = (video: HTMLVideoElement, token: number) => {
     if (typeof video.requestVideoFrameCallback !== 'function') return
     video.requestVideoFrameCallback(() => {
-      if (playToken.current !== token || video !== frontVideo()) return
-      if (!wrappingRef.current) drawHold(video)
-      const nearEnd = Boolean(video.duration) && video.currentTime >= video.duration - 0.08
-      if (nearEnd && loopRef.current) {
-        wrapLoop(video, token)
-        return
+      if (playToken.current !== token) return
+      if (!video.seeking && paint(video)) posterRef.current?.classList.remove('on')
+      const duration = video.duration
+      if (loopRef.current && duration && video.currentTime >= duration - 0.05) {
+        if (!wrappingRef.current) {
+          wrappingRef.current = true
+          try {
+            video.currentTime = 0
+          } catch {
+            wrappingRef.current = false
+          }
+        }
+      } else if (video.currentTime < 0.12) {
+        wrappingRef.current = false
       }
-      if (nearEnd && !loopRef.current) showHold()
-      watchPlayback(video, token)
+      if (video.ended) {
+        if (loopRef.current) {
+          wrappingRef.current = true
+          try {
+            video.currentTime = 0
+          } catch {
+            /* ignore */
+          }
+          video.play()?.catch(() => {})
+        } else {
+          showHowStill()
+          return
+        }
+      }
+      watch(video, token)
     })
   }
 
-  const wrapLoop = (outgoing: HTMLVideoElement, token: number) => {
-    if (wrappingRef.current || playToken.current !== token || !loopRef.current) return
-    if (outgoing !== frontVideo()) return
-    wrappingRef.current = true
-    drawHold(outgoing)
-    showHold()
-    const incoming = backVideo()
-    if (!incoming) {
-      wrappingRef.current = false
-      return
-    }
-    frontIndex.current = frontIndex.current === 0 ? 1 : 0
-    outgoing.pause()
-    outgoing.classList.remove('is-front')
-    parkAtStart(outgoing, token)
-    incoming.classList.add('is-front')
-    incoming.muted = true
-    incoming.defaultMuted = true
-    incoming.playsInline = true
-    incoming.loop = false
-    const startIncoming = () => {
-      if (playToken.current !== token) return
-      const pending = incoming.play()
-      if (pending && typeof pending.catch === 'function') {
-        pending.catch(() => {
-          if (playToken.current !== token) return
-          requestAnimationFrame(() => {
-            incoming.play()?.catch(() => {})
-          })
-        })
-      }
-      revealWhenBright(incoming, token, 0, () => {
-        if (playToken.current !== token) return
-        hideHold()
-        wrappingRef.current = false
-        watchPlayback(incoming, token)
-      })
-    }
-    if (incoming.readyState >= 2 && incoming.currentTime < 0.05 && !incoming.seeking) startIncoming()
-    else {
-      const onSeeked = () => {
-        incoming.removeEventListener('seeked', onSeeked)
-        startIncoming()
-      }
-      incoming.addEventListener('seeked', onSeeked)
-      try {
-        incoming.currentTime = 0
-      } catch {
-        startIncoming()
-      }
-    }
-  }
-
-  const showHowStill = () => {
-    const token = ++playToken.current
-    hoveringRef.current = false
-    loopRef.current = false
-    wrappingRef.current = false
-    showPoster()
-    hideHold()
-    for (const video of videos()) {
-      video.loop = false
-      video.classList.remove('is-front')
-      parkAtStart(video, token)
-    }
-  }
-
   const playHow = (loop: boolean) => {
-    const video = frontVideo()
+    const video = videoRef.current
     if (!video) return
     const token = ++playToken.current
     loopRef.current = loop
@@ -193,28 +155,23 @@ const HowToClip = memo(function HowToClip() {
     video.defaultMuted = true
     video.playsInline = true
     video.loop = false
+    const go = () => {
+      if (playToken.current !== token) return
+      const attempt = (retry: boolean) => {
+        if (playToken.current !== token) return
+        const pending = video.play()
+        if (pending && typeof pending.catch === 'function') {
+          pending.catch(() => {
+            if (!retry || playToken.current !== token) return
+            requestAnimationFrame(() => attempt(false))
+          })
+        }
+      }
+      attempt(true)
+      watch(video, token)
+    }
     const start = () => {
       if (playToken.current !== token) return
-      const go = () => {
-        if (playToken.current !== token) return
-        const attempt = (retry: boolean) => {
-          if (playToken.current !== token) return
-          const pending = video.play()
-          if (pending && typeof pending.catch === 'function') {
-            pending.catch(() => {
-              if (!retry || playToken.current !== token) return
-              requestAnimationFrame(() => attempt(false))
-            })
-          }
-        }
-        video.classList.add('is-front')
-        attempt(true)
-        revealWhenBright(video, token, 0, () => {
-          if (playToken.current !== token) return
-          hidePoster()
-          watchPlayback(video, token)
-        })
-      }
       if (video.readyState >= 2 && video.currentTime < 0.05 && !video.seeking) go()
       else {
         const onSeeked = () => {
@@ -284,29 +241,35 @@ const HowToClip = memo(function HowToClip() {
       }}
     >
       <img ref={posterRef} className="how-still on" src={howPosterSrc} alt="" />
-      {([0, 1] as const).map((index) => (
-        <video
-          key={index}
-          ref={videoRefs[index]}
-          src={howClipSrc}
-          muted
-          playsInline
-          controls={false}
-          controlsList="nodownload nofullscreen noremoteplayback"
-          disablePictureInPicture
-          disableRemotePlayback
-          preload="auto"
-          width={1920}
-          height={1080}
-          aria-hidden="true"
-          onEnded={(event) => {
-            const video = event.currentTarget
-            if (video !== frontVideo()) return
-            if (loopRef.current) wrapLoop(video, playToken.current)
-            else showHowStill()
-          }}
-        />
-      ))}
+      <video
+        ref={videoRef}
+        src={howClipSrc}
+        muted
+        playsInline
+        controls={false}
+        controlsList="nodownload nofullscreen noremoteplayback"
+        disablePictureInPicture
+        disableRemotePlayback
+        preload="auto"
+        width={1920}
+        height={1080}
+        aria-hidden="true"
+        onEnded={() => {
+          const video = videoRef.current
+          if (!video) return
+          if (loopRef.current) {
+            wrappingRef.current = true
+            try {
+              video.currentTime = 0
+            } catch {
+              /* ignore */
+            }
+            video.play()?.catch(() => {})
+            return
+          }
+          showHowStill()
+        }}
+      />
       <canvas ref={holdRef} className="how-hold" aria-hidden="true" />
     </article>
   )
