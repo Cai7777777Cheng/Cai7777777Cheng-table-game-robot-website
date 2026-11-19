@@ -278,7 +278,7 @@ const HowToClip = memo(function HowToClip() {
 const features = [
   {
     title: 'Build Connections',
-    body: 'It reads the mood at the table and answers in real time with motion, light, and sound.',
+    body: 'It reads the mood and the players’ personalities, then answers in real time with motion, light, and sound to bring players closer.',
   },
   {
     title: 'In the game',
