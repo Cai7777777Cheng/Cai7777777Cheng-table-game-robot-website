@@ -77,13 +77,15 @@ const HowToClip = memo(function HowToClip() {
   const paint = (video: HTMLVideoElement) => {
     const hold = holdRef.current
     if (!hold || howFrameIsBad(video)) return false
-    if (hold.width !== 960) {
-      hold.width = 960
-      hold.height = 540
+    const w = video.videoWidth || 1920
+    const h = video.videoHeight || 1080
+    if (hold.width !== w || hold.height !== h) {
+      hold.width = w
+      hold.height = h
     }
     const ctx = hold.getContext('2d', { alpha: false })
     if (!ctx) return false
-    ctx.drawImage(video, 0, 0, hold.width, hold.height)
+    ctx.drawImage(video, 0, 0, w, h)
     hold.classList.add('on')
     return true
   }
@@ -294,13 +296,15 @@ const HowToLeftClip = memo(function HowToLeftClip() {
   const paint = (video: HTMLVideoElement) => {
     const hold = holdRef.current
     if (!hold || video.readyState < 2 || video.seeking) return false
-    if (hold.width !== 960) {
-      hold.width = 960
-      hold.height = 540
+    const w = video.videoWidth || 1920
+    const h = video.videoHeight || 1080
+    if (hold.width !== w || hold.height !== h) {
+      hold.width = w
+      hold.height = h
     }
     const ctx = hold.getContext('2d', { alpha: false })
     if (!ctx) return false
-    ctx.drawImage(video, 0, 0, hold.width, hold.height)
+    ctx.drawImage(video, 0, 0, w, h)
     hold.classList.add('on')
     return true
   }
