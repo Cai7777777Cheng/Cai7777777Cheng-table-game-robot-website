@@ -3,8 +3,8 @@ import { motion, useReducedMotion } from 'framer-motion'
 import { ProjectStory } from '../components/ProjectStory.tsx'
 import { ScreenBreakdown } from '../components/ScreenBreakdown.tsx'
 
-const heroSrc = `${import.meta.env.BASE_URL}hero-v4.jpg`
 const coverSrc = `${import.meta.env.BASE_URL}hero-v5.jpg`
+const endPageSrc = `${import.meta.env.BASE_URL}end-page-living-room.jpg`
 const assembleSrc = `${import.meta.env.BASE_URL}page2-assemble.mp4`
 const assemblePoster = `${import.meta.env.BASE_URL}page2-assemble-poster.jpg`
 const assembleEnd = `${import.meta.env.BASE_URL}page2-assemble-end.jpg`
@@ -846,7 +846,12 @@ export function Home() {
 
       <section className="close" id="close">
         <div className="close-frame">
-          <img src={heroSrc} alt="" />
+          <img
+            src={endPageSrc}
+            alt="Nomo on a living-room table while three people play cards"
+            width={3840}
+            height={2160}
+          />
         </div>
         <div className="close-veil" />
         <div className="close-copy">
