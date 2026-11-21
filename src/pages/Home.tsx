@@ -830,6 +830,17 @@ export function Home() {
         </div>
       </section>
 
+      <section className="close" id="close">
+        <div className="close-frame">
+          <img
+            src={endPageSrc}
+            alt="Nomo on a living-room table while three people play cards"
+            width={3840}
+            height={2160}
+          />
+        </div>
+      </section>
+
       <section className="band" id="craft">
         <motion.div className="center narrow" {...rise()}>
           <h2>How to use NOMO</h2>
@@ -842,17 +853,6 @@ export function Home() {
         <article className="card gray" aria-label="Photo to come">
           <span>Photo to come</span>
         </article>
-      </section>
-
-      <section className="close" id="close">
-        <div className="close-frame">
-          <img
-            src={endPageSrc}
-            alt="Nomo on a living-room table while three people play cards"
-            width={3840}
-            height={2160}
-          />
-        </div>
       </section>
 
       <ScreenBreakdown id="ux" />
