@@ -1,5 +1,6 @@
 import { memo, useEffect, useRef } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
+import { DragReveal } from '../components/DragReveal.tsx'
 import { ProjectStory } from '../components/ProjectStory.tsx'
 import { ScreenBreakdown } from '../components/ScreenBreakdown.tsx'
 
@@ -832,11 +833,9 @@ export function Home() {
 
       <section className="close" id="close">
         <div className="close-frame">
-          <img
+          <DragReveal
             src={endPageSrc}
             alt="Nomo on a living-room table while three people play cards"
-            width={3840}
-            height={2160}
           />
         </div>
       </section>
