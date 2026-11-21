@@ -13,7 +13,6 @@ const howClipSrc = `${import.meta.env.BASE_URL}how-to-use-nomo-hover.mp4`
 const howPosterSrc = `${import.meta.env.BASE_URL}how-to-use-nomo-hover-poster.jpg`
 const howLeftSrc = `${import.meta.env.BASE_URL}how-to-use-nomo-left.mp4`
 const howLeftPosterSrc = `${import.meta.env.BASE_URL}how-to-use-nomo-left-poster.jpg`
-const repoUrl = 'https://github.com/Cai7777777Cheng/Table-robot-function'
 
 let howSample: HTMLCanvasElement | null = null
 
@@ -782,7 +781,7 @@ export function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, ease }}
         >
-          <a className="pill light" href="#lab">
+          <a className="pill light" href="#ux">
             see more details
           </a>
         </motion.div>
@@ -843,21 +842,6 @@ export function Home() {
         <article className="card gray" aria-label="Photo to come">
           <span>Photo to come</span>
         </article>
-      </section>
-
-      <section className="band" id="lab">
-        <motion.div className="center" {...rise()}>
-          <h2>The screen, taken apart.</h2>
-          <p>Status, expression, skill, and the world behind the character.</p>
-          <div className="actions">
-            <a className="pill" href="#ux">
-              Open the prototype
-            </a>
-            <a className="quiet-link" href={repoUrl} target="_blank" rel="noreferrer">
-              GitHub repo
-            </a>
-          </div>
-        </motion.div>
       </section>
 
       <section className="close" id="close">
