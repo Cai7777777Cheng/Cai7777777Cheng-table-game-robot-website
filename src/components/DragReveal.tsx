@@ -72,14 +72,14 @@ export function DragReveal({ src, alt, coverSrc }: DragRevealProps) {
 
   return (
     <div className="reveal" ref={frameRef}>
-      <img className="reveal-photo" src={src} alt={alt} width={3840} height={2160} />
+      <img className="reveal-photo" src={src} alt={alt} width={4476} height={2315} />
       <div
         className="reveal-cover"
         style={{ clipPath: `inset(0 ${100 - value}% 0 0)` }}
         aria-hidden="true"
       >
         {coverSrc ? (
-          <img className="reveal-photo" src={coverSrc} alt="" />
+          <img className="reveal-photo" src={coverSrc} alt="" width={4476} height={2315} />
         ) : (
           <div className="reveal-placeholder" />
         )}

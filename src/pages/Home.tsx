@@ -6,6 +6,7 @@ import { ScreenBreakdown } from '../components/ScreenBreakdown.tsx'
 
 const coverSrc = `${import.meta.env.BASE_URL}hero-v5.jpg`
 const endPageSrc = `${import.meta.env.BASE_URL}end-page-living-room.jpg`
+const endPageRevealSrc = `${import.meta.env.BASE_URL}end-page-living-room-reveal.jpg`
 const assembleSrc = `${import.meta.env.BASE_URL}page2-assemble.mp4`
 const assemblePoster = `${import.meta.env.BASE_URL}page2-assemble-poster.jpg`
 const assembleEnd = `${import.meta.env.BASE_URL}page2-assemble-end.jpg`
@@ -794,7 +795,7 @@ export function Home() {
         className="page2"
         id="promise"
         ref={page2Ref}
-        aria-label="It doesn’t look much like a robot"
+        aria-label="NOMO BUILDS CONNECTIONS"
       >
         <div className="page2-stage">
           <video
@@ -821,11 +822,9 @@ export function Home() {
             aria-hidden="true"
           />
           <div className="page2-copy">
-            <h2>It doesn’t look much like a robot.</h2>
+            <h2>NOMO BUILDS CONNECTIONS</h2>
             <p>
-              Nomo sits between the cards and your hands. The wraparound screen around its neck
-              brings dodges, HP bars, and moves to the whole table—no more huddling around a single
-              screen.
+              Nomo reads the table’s atmosphere and each player’s mood and personality in real time, then answers with motion, expression, color, light, and sound — building connection around the table.
             </p>
           </div>
         </div>
@@ -835,7 +834,8 @@ export function Home() {
         <div className="close-frame">
           <DragReveal
             src={endPageSrc}
-            alt="Nomo on a living-room table while three people play cards"
+            coverSrc={endPageRevealSrc}
+            alt="Nomo on a living-room table with three smiling people playing cards, its screen showing two spinner wheels"
           />
         </div>
       </section>
