@@ -8,10 +8,10 @@ type DragRevealProps = {
 
 export function DragReveal({ src, alt, coverSrc }: DragRevealProps) {
   const frameRef = useRef<HTMLDivElement>(null)
-  const valueRef = useRef(8)
+  const valueRef = useRef(3.3)
   const grabOffsetRef = useRef(0)
   const draggingRef = useRef(false)
-  const [value, setValue] = useState(8)
+  const [value, setValue] = useState(3.3)
 
   const commit = (next: number) => {
     const clamped = Math.min(100, Math.max(0, next))
