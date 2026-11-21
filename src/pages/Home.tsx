@@ -853,13 +853,6 @@ export function Home() {
             height={2160}
           />
         </div>
-        <div className="close-veil" />
-        <div className="close-copy">
-          <h2>Screen UX Breakdown.</h2>
-          <a className="pill" href="#ux">
-            Open the prototype
-          </a>
-        </div>
       </section>
 
       <ScreenBreakdown id="ux" />
