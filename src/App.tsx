@@ -16,7 +16,7 @@ function ScrollWithRoute() {
     const previous = root.style.scrollBehavior
     root.style.scrollBehavior = 'auto'
     const hashId = hash.replace('#', '')
-    const id = hashId || (path === '/prototype' ? 'ux' : path === '/features' ? 'features' : '')
+    const id = hashId || (path === '/prototype' ? 'ux' : '')
     if (id) document.getElementById(id)?.scrollIntoView()
     else window.scrollTo(0, 0)
     root.style.scrollBehavior = previous
@@ -32,7 +32,7 @@ export default function App() {
       <Nav />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/features" element={<Home />} />
+        <Route path="/features" element={<Navigate to="/" replace />} />
         <Route path="/prototype" element={<Home />} />
         <Route path="/companion" element={<Navigate to="/prototype" replace />} />
         <Route path="*" element={<Missing />} />

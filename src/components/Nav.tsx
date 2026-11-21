@@ -3,7 +3,6 @@ import { Link, useLocation } from 'react-router-dom'
 
 const sections = [
   { id: 'promise', label: 'Screen' },
-  { id: 'features', label: 'Table' },
   { id: 'craft', label: 'Object' },
   { id: 'ux', label: 'Prototype' },
 ]
@@ -11,7 +10,7 @@ const sections = [
 export function Nav() {
   const { pathname } = useLocation()
   const path = pathname.replace(/\/+$/, '') || '/'
-  const onLongPage = path === '/' || path === '/features' || path === '/prototype'
+  const onLongPage = path === '/' || path === '/prototype'
   const [stuck, setStuck] = useState(false)
   const [active, setActive] = useState(path === '/prototype' ? 'ux' : 'promise')
 

@@ -499,21 +499,6 @@ const HowToLeftClip = memo(function HowToLeftClip() {
   )
 })
 
-const features = [
-  {
-    title: 'Build Connections',
-    body: 'It reads the mood and the players’ personalities, then answers in real time with motion, light, and sound to bring players closer.',
-  },
-  {
-    title: 'In the game',
-    body: 'It answers the state of the game with motion and expression, and projects visuals that deepen immersion.',
-  },
-  {
-    title: 'Companion UX',
-    body: 'Nomo and its companion robots guide new players, and offer encouragement or comfort when the game is won or lost.',
-  },
-] as const
-
 const ease = [0.22, 1, 0.36, 1] as const
 
 export function Home() {
@@ -844,24 +829,6 @@ export function Home() {
             </p>
           </div>
         </div>
-      </section>
-
-      <section className="table-band" id="features" aria-label="Table">
-        <motion.h2 {...rise()}>The whole table can enjoy.</motion.h2>
-        <ol className="table-list">
-          {features.map((item, index) => (
-            <li key={item.title} className={index % 2 === 0 ? 'side-right' : 'side-left'}>
-              <div className="table-copy">
-                <span className="table-num">{index + 1}</span>
-                <h3>{item.title}</h3>
-                <p>{item.body}</p>
-              </div>
-              <figure className="table-frame" aria-label="Photo to come">
-                <span>Photo to come</span>
-              </figure>
-            </li>
-          ))}
-        </ol>
       </section>
 
       <section className="band" id="craft">
