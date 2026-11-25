@@ -110,10 +110,10 @@ export function ProjectStory() {
             Challenge
           </motion.p>
           <motion.p className="story-body" {...rise(0.05)}>
-            Offline products struggle to get existing players to bring in new ones, and the barrier for beginners is high. Even players in the same circle find it hard to break the ice.
+            The tabletop community has a social problem too. At Pokémon gyms, many people are unwilling to form a play group or team with strangers.
           </motion.p>
           <motion.p className="story-body" {...rise(0.08)}>
-            Online games, meanwhile, are more visually appealing.
+            Many players line up at the shop door to buy cards, but few actually sit down and play together.
           </motion.p>
         </div>
         <figure className="story-pane story-photo scrim">
@@ -127,8 +127,7 @@ export function ProjectStory() {
           <div className="stat-photo-copy">
             <p className="stat-num">75%</p>
             <p className="stat-line stat-two">
-              <span>of adult Pokémon card buyers</span>
-              <span>collect or resell — they don’t play.</span>
+              of adult Pokémon card buyers collect — but they don't play because of social anxiety.
             </p>
           </div>
         </figure>
