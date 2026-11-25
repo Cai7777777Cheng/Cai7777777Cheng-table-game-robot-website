@@ -11,8 +11,8 @@ const assembleSrc = `${import.meta.env.BASE_URL}page2-assemble.mp4`
 const assemblePoster = `${import.meta.env.BASE_URL}page2-assemble-poster.jpg`
 const assembleEnd = `${import.meta.env.BASE_URL}page2-assemble-end.jpg`
 const lightsSrc = `${import.meta.env.BASE_URL}page2-lights-on.jpg`
-const howClipSrc = `${import.meta.env.BASE_URL}how-to-use-nomo-hover-v7.mp4`
-const howPosterSrc = `${import.meta.env.BASE_URL}how-to-use-nomo-hover-v7-poster.jpg`
+const howClipSrc = `${import.meta.env.BASE_URL}how-to-use-nomo-hover-v8.mp4`
+const howPosterSrc = `${import.meta.env.BASE_URL}how-to-use-nomo-hover-v8-poster.jpg`
 const howLeftSrc = `${import.meta.env.BASE_URL}how-to-use-nomo-left.mp4`
 const howLeftPosterSrc = `${import.meta.env.BASE_URL}how-to-use-nomo-left-poster.jpg`
 
