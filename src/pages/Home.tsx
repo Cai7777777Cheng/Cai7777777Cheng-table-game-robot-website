@@ -5,7 +5,7 @@ import { ProjectStory } from '../components/ProjectStory.tsx'
 import { ScreenBreakdown } from '../components/ScreenBreakdown.tsx'
 
 const coverSrc = `${import.meta.env.BASE_URL}hero-v5.jpg`
-const endPageSrc = `${import.meta.env.BASE_URL}end-page-living-room-callouts.jpg`
+const endPageSrc = `${import.meta.env.BASE_URL}end-page-living-room-callouts-v2.jpg`
 const endPageRevealSrc = `${import.meta.env.BASE_URL}end-page-living-room-reveal.jpg`
 const assembleSrc = `${import.meta.env.BASE_URL}page2-assemble.mp4`
 const assemblePoster = `${import.meta.env.BASE_URL}page2-assemble-poster.jpg`
