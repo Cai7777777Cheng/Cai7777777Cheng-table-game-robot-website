@@ -119,9 +119,9 @@ export function ProjectStory() {
         <figure className="story-pane story-photo scrim">
           <StoryPhoto
             src={photo75Src}
-            alt="A man smiling at a Pokémon card in front of a Pokémon vending machine"
-            width={1440}
-            height={2560}
+            alt="Pokémon TCG Official Gym in Shanghai: the storefront sign, a crowded shop, and people playing at tables."
+            width={585}
+            height={650}
           />
           <p className="story-source">Source: Circana, March 2025</p>
           <div className="stat-photo-copy">
