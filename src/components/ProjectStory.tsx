@@ -176,6 +176,15 @@ export function ProjectStory() {
           <motion.p className="story-body" {...rise(0.08)}>
             Because they lack a sense of companionship and atmosphere, mid-term churn in online products is also high.
           </motion.p>
+          <div className="story-keywords">
+            <motion.p className="story-label" {...rise(0.1)}>
+              Keyword
+            </motion.p>
+            <motion.div className="about-chips" {...rise(0.12)}>
+              <span>Visual appeal</span>
+              <span>Companionship</span>
+            </motion.div>
+          </div>
         </div>
       </section>
     </>
