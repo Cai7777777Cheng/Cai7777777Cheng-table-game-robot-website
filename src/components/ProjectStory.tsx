@@ -89,8 +89,7 @@ export function ProjectStory() {
           <div className="stat-photo-copy">
             <p className="stat-num">65%</p>
             <p className="stat-line stat-two">
-              <span>of Pokémon tabletop gym seats sit empty</span>
-              <span>or occupied — even at peak hours.</span>
+              tabletop gym seats sit empty — even at peak hours.
             </p>
           </div>
         </figure>
@@ -99,7 +98,10 @@ export function ProjectStory() {
             Trend
           </motion.p>
           <motion.p className="story-body" {...rise(0.06)}>
-            Tabletop games bind friends and help like-minded players meet, but how many people take part — and how often — is not encouraging.
+            In China in 2026, a large number of seats in board game venues sit empty even at peak hours.
+          </motion.p>
+          <motion.p className="story-body" {...rise(0.08)}>
+            This stands in sharp contrast to the industry's boom two to three years ago. Fewer and fewer newcomers are willing to try games that have a barrier to entry, and veteran players are walking away from titles with narrow, unappealing gameplay.
           </motion.p>
         </div>
       </section>
