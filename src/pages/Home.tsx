@@ -795,7 +795,7 @@ export function Home() {
         className="page2"
         id="promise"
         ref={page2Ref}
-        aria-label="NOMO FEELS"
+        aria-label="MEET NOMO"
       >
         <div className="page2-stage">
           <video
@@ -822,9 +822,9 @@ export function Home() {
             aria-hidden="true"
           />
           <div className="page2-copy">
-            <h2>NOMO FEELS</h2>
+            <h2>MEET NOMO</h2>
             <p>
-              Nomo reads the table’s atmosphere and each player’s mood and personality in real time, then answers with motion, expression, color, light, and sound — building connection around the table.
+              Nomo feels the table’s atmosphere and each player’s mood and personality in real time by microphone and camera, then answers with motion, expression, color, light, and sound — building connection around the table.
             </p>
           </div>
         </div>
