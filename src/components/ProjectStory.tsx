@@ -103,6 +103,14 @@ export function ProjectStory() {
           <motion.p className="story-body" {...rise(0.08)}>
             This stands in sharp contrast to the industry's boom two to three years ago. Fewer and fewer newcomers are willing to try games that have a barrier to entry, and veteran players are walking away from titles with narrow, unappealing gameplay.
           </motion.p>
+          <div className="story-keywords">
+            <motion.p className="story-label" {...rise(0.1)}>
+              Keyword
+            </motion.p>
+            <motion.div className="about-chips" {...rise(0.12)}>
+              <span>Beginner-friendly</span>
+            </motion.div>
+          </div>
         </div>
       </section>
 
