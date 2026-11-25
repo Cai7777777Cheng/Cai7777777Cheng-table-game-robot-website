@@ -55,7 +55,7 @@ export function Nav() {
         ))}
       </nav>
       <div className="nav-actions">
-        <a className="nav-personal" href="https://peng-chengxu.deed.page/">
+        <a className="nav-personal" href="https://cai7777777cheng.github.io/Personal-Website/">
           Personal site
         </a>
         <a className="pill" href="#ux">

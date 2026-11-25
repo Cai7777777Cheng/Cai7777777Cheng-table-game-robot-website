@@ -14,7 +14,7 @@ export function Footer() {
         <a href={demoUrl} target="_blank" rel="noreferrer">
           Demo
         </a>
-        <a href="https://peng-chengxu.deed.page/">Personal site</a>
+        <a href="https://cai7777777cheng.github.io/Personal-Website/">Personal site</a>
       </nav>
     </footer>
   )
