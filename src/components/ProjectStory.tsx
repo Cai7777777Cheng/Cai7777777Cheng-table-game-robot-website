@@ -163,7 +163,7 @@ export function ProjectStory() {
           <p className="story-source">Source: Asmodee × Censuswide, July 2025</p>
           <div className="stat-photo-copy">
             <p className="stat-num">64%</p>
-            <p className="stat-line">use tabletop games to bring family and friends together.</p>
+            <p className="stat-line">of veteran players choose to try UNO online rather than keep organizing offline games.</p>
           </div>
         </figure>
         <div className="story-pane story-copy">
