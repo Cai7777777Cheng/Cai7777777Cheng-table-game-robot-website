@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 
 const gymSrc = `${import.meta.env.BASE_URL}nomo-gym-25d.jpg`
-const photo65Src = `${import.meta.env.BASE_URL}stat-65-gym.jpg`
+const photo65Src = `${import.meta.env.BASE_URL}stat-65-taft.jpg`
 const photo75Src = `${import.meta.env.BASE_URL}stat-75-vending.jpg`
 const photo64Src = `${import.meta.env.BASE_URL}stat-64-together.jpg`
 
@@ -83,8 +83,8 @@ export function ProjectStory() {
           <StoryPhoto
             src={photo65Src}
             alt="Two players at a card-shop table, with empty orange chairs in the foreground"
-            width={2160}
-            height={2640}
+            width={378}
+            height={420}
           />
           <div className="stat-photo-copy">
             <p className="stat-num">65%</p>
