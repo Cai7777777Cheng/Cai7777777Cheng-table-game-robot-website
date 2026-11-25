@@ -4,7 +4,7 @@ import { motion, useReducedMotion } from 'framer-motion'
 const gymSrc = `${import.meta.env.BASE_URL}nomo-gym-25d.jpg`
 const photo65Src = `${import.meta.env.BASE_URL}stat-65-taft-v2.jpg`
 const photo75Src = `${import.meta.env.BASE_URL}stat-75-vending.jpg`
-const photo64Src = `${import.meta.env.BASE_URL}stat-64-phone.jpg`
+const photo64Src = `${import.meta.env.BASE_URL}stat-64-phone-v2.jpg`
 
 const ease = [0.22, 1, 0.36, 1] as const
 
