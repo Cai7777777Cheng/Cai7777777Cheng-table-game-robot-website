@@ -120,8 +120,8 @@ export function ProjectStory() {
           <StoryPhoto
             src={photo75Src}
             alt="Pokémon TCG Official Gym in Shanghai: the storefront sign, a crowded shop, and people playing at tables."
-            width={585}
-            height={650}
+            width={630}
+            height={700}
           />
           <p className="story-source">Source: Circana, March 2025</p>
           <div className="stat-photo-copy">
