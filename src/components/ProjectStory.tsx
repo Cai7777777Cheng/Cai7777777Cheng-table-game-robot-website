@@ -133,7 +133,7 @@ export function ProjectStory() {
         </figure>
       </section>
 
-      <section className="story-split" aria-label="Opportunity">
+      <section className="story-split" aria-label="Challenge">
         <figure className="story-pane story-photo photo-64 scrim">
           <StoryPhoto
             src={photo64Src}
@@ -149,13 +149,13 @@ export function ProjectStory() {
         </figure>
         <div className="story-pane story-copy">
           <motion.p className="story-label" {...rise()}>
-            Opportunity
+            Challenge
           </motion.p>
           <motion.p className="story-body" {...rise(0.05)}>
-            Online games are weakly social, and player churn is high. Many offline tabletop games already have a community effect.
+            Online competitors have greater visual appeal. In the short term, they are a strong rival to offline products and can attract a large number of users.
           </motion.p>
           <motion.p className="story-body" {...rise(0.08)}>
-            The opportunity is to provide visual stimulus, instant emotional interaction, and a lift in the mood at the table.
+            Because they lack a sense of companionship and atmosphere, mid-term churn in online products is also high.
           </motion.p>
         </div>
       </section>
