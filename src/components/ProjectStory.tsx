@@ -4,7 +4,7 @@ import { motion, useReducedMotion } from 'framer-motion'
 const gymSrc = `${import.meta.env.BASE_URL}nomo-gym-25d.jpg`
 const photo65Src = `${import.meta.env.BASE_URL}stat-65-taft-v2.jpg`
 const photo75Src = `${import.meta.env.BASE_URL}stat-75-vending.jpg`
-const photo64Src = `${import.meta.env.BASE_URL}stat-64-together.jpg`
+const photo64Src = `${import.meta.env.BASE_URL}stat-64-phone.jpg`
 
 const ease = [0.22, 1, 0.36, 1] as const
 
@@ -157,8 +157,8 @@ export function ProjectStory() {
           <StoryPhoto
             src={photo64Src}
             alt="Four friends playing UNO around a wooden table in a warm evening living room"
-            width={683}
-            height={1024}
+            width={729}
+            height={810}
           />
           <p className="story-source">Source: Asmodee × Censuswide, July 2025</p>
           <div className="stat-photo-copy">
