@@ -1,4 +1,6 @@
 const diagramSrc = `${import.meta.env.BASE_URL}ux-breakdown-v2.jpg`
+const demoVideoSrc = `${import.meta.env.BASE_URL}wraparound-screen-content-generation.mp4`
+const demoPosterSrc = `${import.meta.env.BASE_URL}wraparound-screen-content-generation-poster.jpg`
 const demoUrl = 'https://cai7777777cheng.github.io/Table-robot-function/'
 
 export function ScreenBreakdown({ id }: { id?: string }) {
@@ -13,7 +15,17 @@ export function ScreenBreakdown({ id }: { id?: string }) {
         />
       </div>
       <div className="ux-copy">
-        <p>How the wraparound screen is built, one layer at a time.</p>
+        <p>A demonstration of how wraparound-screen content is generated.</p>
+        <video
+          className="ux-demo"
+          src={demoVideoSrc}
+          poster={demoPosterSrc}
+          controls
+          playsInline
+          preload="metadata"
+          width={1920}
+          height={1080}
+        />
         <a className="ux-more" href={demoUrl} target="_blank" rel="noreferrer">
           See More UX?
         </a>
