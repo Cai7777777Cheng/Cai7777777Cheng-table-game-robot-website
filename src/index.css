@@ -461,6 +461,12 @@ a { color: inherit; text-decoration: none; }
 .story-copy .story-body + .story-body {
   margin-top: 0.85rem;
 }
+.story-keywords {
+  margin-top: 1.75rem;
+}
+.story-keywords .about-chips {
+  margin-top: 0.65rem;
+}
 .stat-type-pane {
   position: relative;
   align-self: start;

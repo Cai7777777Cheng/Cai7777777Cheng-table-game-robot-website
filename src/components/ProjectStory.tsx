@@ -115,6 +115,15 @@ export function ProjectStory() {
           <motion.p className="story-body" {...rise(0.08)}>
             Many players line up at the shop door to buy cards, but few actually sit down and play together.
           </motion.p>
+          <div className="story-keywords">
+            <motion.p className="story-label" {...rise(0.1)}>
+              Keyword
+            </motion.p>
+            <motion.div className="about-chips" {...rise(0.12)}>
+              <span>Social</span>
+              <span>Ice-breaking</span>
+            </motion.div>
+          </div>
         </div>
         <figure className="story-pane story-photo scrim">
           <StoryPhoto
