@@ -824,7 +824,7 @@ export function Home() {
           <div className="page2-copy">
             <h2>MEET NOMO</h2>
             <p>
-              Nomo feels the table’s atmosphere and each player’s mood and personality in real time by microphone and camera, then answers with motion, expression, color, light, and sound — building connection around the table.
+              Nomo feels the table’s atmosphere and each player’s mood in real time by microphone and camera, then answers with motion, light, and sound.
             </p>
           </div>
         </div>
