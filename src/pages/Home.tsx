@@ -15,6 +15,7 @@ const howClipSrc = `${import.meta.env.BASE_URL}how-to-use-nomo-hover-v9.mp4`
 const howPosterSrc = `${import.meta.env.BASE_URL}how-to-use-nomo-hover-v9-poster.jpg`
 const howLeftSrc = `${import.meta.env.BASE_URL}how-to-use-nomo-left.mp4`
 const howLeftPosterSrc = `${import.meta.env.BASE_URL}how-to-use-nomo-left-poster.jpg`
+const howRightSrc = `${import.meta.env.BASE_URL}how-to-use-nomo-right-v1.jpg`
 
 let howSample: HTMLCanvasElement | null = null
 
@@ -849,8 +850,32 @@ export function Home() {
       <section className="cards" id="cards" aria-label="Details">
         <HowToLeftClip />
         <HowToClip />
-        <article className="card gray" aria-label="Photo to come">
-          <span>Photo to come</span>
+        <article className="card how-locked" aria-label="more details coming soon">
+          <img
+            className="how-locked-photo"
+            src={howRightSrc}
+            alt="A blurred photo of Nomo at a table with people playing cards"
+            width={2400}
+            height={1350}
+          />
+          <img
+            className="how-locked-blur"
+            src={howRightSrc}
+            alt=""
+            width={2400}
+            height={1350}
+            aria-hidden="true"
+          />
+          <div className="how-locked-frost" aria-hidden="true" />
+          <svg className="how-locked-lock" width="46" height="60" viewBox="0 0 46 60" aria-hidden="true">
+            <path
+              fill="#3a3a3a"
+              fillRule="evenodd"
+              d="M23 3.5c7.5 0 13.5 6 13.5 13.5V30h-8V17c0-3-2.5-5.5-5.5-5.5S17.5 14 17.5 17v13h-8V17C9.5 9.5 15.5 3.5 23 3.5z"
+            />
+            <rect x="4" y="26" width="38" height="30" rx="8" fill="#3a3a3a" />
+          </svg>
+          <span className="how-locked-caption">more details coming soon</span>
         </article>
       </section>
 
